@@ -1,0 +1,31 @@
+body {
+  background-color: #e1e1e1;
+}
+
+.fake-footer {
+  height: 100px;
+  background-color: inherit;
+}
+
+.my-side-colon {
+  background-color: #e1e1e1;
+}
+
+.my-main-section {
+  background-color: whitesmoke;
+  min-height: 500px;
+}
+
+.my-close {
+  font-size: 2rem;
+  color: red;
+}
+
+.my-photo-at {
+  font-size: 2rem;
+}
+
+.my-image {
+  max-width: 100%;
+  height: auto;
+}

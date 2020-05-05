@@ -1,0 +1,50 @@
+<div class="row">
+  <div class="col-md-4"></div>
+  <div class="col-md-4">
+    <div class="card my-5 bg-light shadow-lg">
+      <form [formGroup]="authService.signUpForm" (submit)="onSubmit()">
+        <div class="card-header text-center">
+          <h2 class="card-title text-primary">Sign up</h2>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="UserName">Username</label>
+            <input type="text" class="form-control" placeholder="Enter username" formControlName="UserName" id="UserName" name="UserName">
+            <span class="text-danger" *ngIf="authService.signUpForm.get('UserName').touched && authService.signUpForm.get('UserName').errors?.required">This field is required</span>
+          </div>
+          <div class="form-group">
+            <label for="Email">Email</label>
+            <input type="email" class="form-control" placeholder="Enter email" formControlName="Email" id="Email" name="Email">
+            <span class="text-danger" *ngIf="authService.signUpForm.get('Email').touched && authService.signUpForm.get('Email').errors?.required">This field is required</span>
+            <span class="text-danger" *ngIf="authService.signUpForm.get('Email').touched && authService.signUpForm.get('Email').errors?.email">Invalid email addres</span>
+          </div>
+          <div formGroupName="Passwords">
+            <div class="form-group">
+              <label for="Password">Password</label>
+              <input type="password" class="form-control" placeholder="Enter password" formControlName="Password" id="Password" name="Password">
+              <span class="text-danger" *ngIf="authService.signUpForm.get('Passwords.Password').touched && authService.signUpForm.get('Passwords.Password').errors?.required">This field is required</span>
+              <span class="text-danger" *ngIf="authService.signUpForm.get('Passwords.Password').touched && authService.signUpForm.get('Passwords.Password').errors?.minlength">Minimum 4 characters required</span>
+            </div>
+            <div class="form-group">
+              <label for="ConfirmPassword">Re-enter password</label>
+              <input type="password" class="form-control" placeholder="Enter password again" formControlName="ConfirmPassword" id="ConfirmPassword" name="ConfirmPassword">
+              <span class="text-danger" *ngIf="authService.signUpForm.get('Passwords.ConfirmPassword').touched && authService.signUpForm.get('Passwords.ConfirmPassword').errors?.required">This field is required</span>
+              <span class="text-danger" *ngIf="authService.signUpForm.get('Passwords.ConfirmPassword').touched && authService.signUpForm.get('Passwords.ConfirmPassword').errors?.passwordMismatch">Passwords are different.</span>
+            </div>
+          </div>
+          <hr class="mx-4">
+          <div>
+            <p class="text-center font-weight-light mb-0">
+              I have an account.
+              <a href="#">Login here</a>
+            </p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button [disabled]="!authService.signUpForm.valid" type="submit" class="btn btn-block btn-outline-secondary">Sign up</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-4"></div>
+</div>

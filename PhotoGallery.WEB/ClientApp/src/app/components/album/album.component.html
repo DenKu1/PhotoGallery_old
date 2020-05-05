@@ -1,0 +1,27 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 my-side-colon">
+      <div class="jumbotron jumbotron-fluid py-4">
+        <div class="container text-center">
+          <h4>Create new album:</h4>
+          <!-- Button to Open the Modal -->
+          <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#createAlbumModal">New album</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8 my-main-section">
+      <div class="container" id="get-albums">
+        <!--GetAlbums-->
+        <app-album-get-all></app-album-get-all>
+      </div>
+    </div>
+    <div class="col-md-2 my-side-colon"></div>
+  </div>
+</div>
+<!--AddAlbumModal-->
+<app-photo-add></app-photo-add>
+<!--AlbumEditNameModal-->
+@Html.Partial("EditName")
+<!--AlbumEditDescriptionModal-->
+@Html.Partial("EditDescription")
+<div class="fake-footer"></div>
