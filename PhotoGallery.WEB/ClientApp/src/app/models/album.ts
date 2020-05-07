@@ -1,8 +1,8 @@
 export class Album
 {
-  Id: number;
-  Name: string;
-  Description: string;
-  Created : Date;
-  Updated : Date;
+  id: number;
+  name: string;
+  description: string;
+  created : Date;
+  updated : Date;
 }
