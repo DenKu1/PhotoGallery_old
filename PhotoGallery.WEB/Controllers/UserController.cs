@@ -48,9 +48,9 @@ namespace PhotoGallery.WEB.Controllers
                 return BadRequest(e.Message);
             }
 
-            return Ok("User is created.");
+            return Ok();
         }
-                
+
         [Route("api/login")]
         [HttpPost]
         [AllowAnonymous]
@@ -61,18 +61,24 @@ namespace PhotoGallery.WEB.Controllers
                 return BadRequest(ModelState);
             }
 
-            string token;
+            (string, UserDTO) loginData;
 
             try
             {
-                token = await _userService.LoginAsync(userLoginDTO);
+                loginData = await _userService.LoginAsync(userLoginDTO);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
 
-            return Ok(new { token });
+            return Ok(new
+            {
+                id = loginData.Item2.Id,
+                userName = loginData.Item2.UserName,
+                email = loginData.Item2.Email,
+                token = loginData.Item1
+            });
         }
 
         //TODO: exceptions!

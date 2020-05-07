@@ -47,24 +47,24 @@ namespace PhotoGallery.WEB.Controllers
         [Authorize(Roles = "User")]
         public async Task<ActionResult<AlbumDTO>> GetAlbum(int id)
         {
-            AlbumDTO album;
+            AlbumDTO albumDTO;
 
             try
             {
-                album = await _albumService.GetAlbumAsync(id);
+                albumDTO = await _albumService.GetAlbumAsync(id);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
 
-            return Ok(album);
+            return Ok(albumDTO);
         }
 
         [HttpPost]
         [Route("api/albums")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult> PostAlbum([FromBody] AlbumAddDTO albumAddDTO)
+        public async Task<ActionResult<AlbumDTO>> PostAlbum([FromBody] AlbumAddDTO albumAddDTO)
         {         
             if (!ModelState.IsValid)
             {
@@ -84,7 +84,7 @@ namespace PhotoGallery.WEB.Controllers
                 return BadRequest(e.Message);
             }
 
-            return CreatedAtAction(nameof(GetAlbum), new { id = albumDTO.Id }, albumDTO);
+            return Ok(albumDTO);
         }
 
         [HttpPut]

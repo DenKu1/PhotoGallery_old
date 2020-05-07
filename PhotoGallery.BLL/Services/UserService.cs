@@ -60,23 +60,18 @@ namespace PhotoGallery.BLL.Services
             await _unit.UserManager.AddToRoleAsync(user, "User");
         }
 
-        public async Task<string> LoginAsync(UserLoginDTO data)
+        public async Task<(string, UserDTO)> LoginAsync(UserLoginDTO data)
         {
             var user = await _unit.UserManager.FindByNameAsync(data.UserName);
 
-            if (user == null)
+            if (user == null || !await _unit.UserManager.CheckPasswordAsync(user, data.Password))
             {
-                throw new ValidationException("User was not found");
-            }
-
-            if (!await _unit.UserManager.CheckPasswordAsync(user, data.Password))
-            {
-                throw new ValidationException("Authorization failed - incorrect password");
+                throw new ValidationException("Incorrect username or password");
             }
 
             var roles = await _unit.UserManager.GetRolesAsync(user);
 
-            return GenerateJwtToken(user, roles);
+            return (GenerateJwtToken(user, roles), _mp.Map<UserDTO>(user));
         }       
 
         public async Task<UserDTO> GetUserProfileAsync(string userId)

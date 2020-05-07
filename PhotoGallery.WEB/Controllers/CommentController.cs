@@ -26,41 +26,41 @@ namespace PhotoGallery.WEB.Controllers
         [Route("api/photos/{id}/comments")]
         public async Task<ActionResult<IEnumerable<CommentDTO>>> GetComments(int id)
         {
-            IEnumerable<CommentDTO> comments;
+            IEnumerable<CommentDTO> commentDTOs;
 
             try
             {
-                comments = await _commentService.GetCommentsAsync(id);
+                commentDTOs = await _commentService.GetCommentsAsync(id);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
 
-            return Ok(comments);
+            return Ok(commentDTOs);
         }
 
         [HttpGet]
         [Route("api/comments/{id}")]
         public async Task<ActionResult<CommentDTO>> GetComment(int id)
         {
-            CommentDTO comment;
+            CommentDTO commentDTO;
 
             try
             {
-                comment = await _commentService.GetCommentAsync(id);
+                commentDTO = await _commentService.GetCommentAsync(id);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
 
-            return Ok(comment);
+            return Ok(commentDTO);
         }
 
         [HttpPost]
         [Route("api/photos/{id}/comments")]
-        public async Task<ActionResult> PostComment(int id, [FromBody] CommentAddDTO commentAddDTO)
+        public async Task<ActionResult<CommentDTO>> PostComment(int id, [FromBody] CommentAddDTO commentAddDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -83,7 +83,7 @@ namespace PhotoGallery.WEB.Controllers
                 return BadRequest(e.Message);
             }
 
-            return CreatedAtAction(nameof(GetComment), new { id = commentDTO.Id }, commentDTO);
+            return Ok(commentDTO);
         }
 
         [HttpDelete]

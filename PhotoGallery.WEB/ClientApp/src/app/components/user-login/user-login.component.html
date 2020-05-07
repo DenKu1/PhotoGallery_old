@@ -1,0 +1,45 @@
+<div class="row">
+  <div class="col-md-4"></div>
+  <div class="col-md-4">
+    <div class="card my-5 bg-light shadow-lg">
+      <form [formGroup]="loginForm" (submit)="onSubmit()">
+        <div class="card-header text-center">
+          <h2 class="card-title text-primary">Log in</h2>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="UserName">Username</label>
+            <input type="text" class="form-control" placeholder="Enter username" formControlName="UserName" id="UserName">
+            <span *ngIf="submitted && f.UserName.errors" class="text-danger">
+              <span *ngIf="f.UserName.errors.required">Username is required</span>
+              <span *ngIf="f.UserName.errors.minlength">Min length is 4 symbols</span>
+              <span *ngIf="f.UserName.errors.maxlength">Max length is 50 symbols</span>
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="Password">Password</label>
+            <input type="password" class="form-control" placeholder="Enter password" formControlName="Password" id="Password">
+            <span *ngIf="submitted && f.Password.errors" class="text-danger">
+              <span *ngIf="f.Password.errors.required">Password is required</span>
+              <span *ngIf="f.Password.errors.minlength">Min length is 4 symbols</span>
+              <span *ngIf="f.Password.errors.maxlength">Max length is 50 symbols</span>
+            </span>
+          </div>
+          <span *ngIf="error" class="text-danger">{{error}}</span>
+          <hr class="mx-4">
+          <div>
+            <p class="text-center font-weight-light mb-0">
+              I still don't have an account. <a [routerLink]="['/register']">Sign up</a>
+            </p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button type="submit" [disabled]="loading" class="btn btn-block btn-outline-secondary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>Login
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-4"></div>
+</div>    

@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from '../../models/user';
+import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -6,12 +9,20 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./nav-menu.component.css']
 })
 export class NavMenuComponent implements OnInit {
-  isAuthenticated = true;
-  username = "Username007";
+  currentUser : User;
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    private userService: UserService
+  ) {
+    this.userService.currentUser.subscribe(x => this.currentUser = x);
+  }
 
   ngOnInit(): void {
   }
 
+  onLogout() {
+    this.userService.logout();
+    this.router.navigate(['/login']);
+  }
 }

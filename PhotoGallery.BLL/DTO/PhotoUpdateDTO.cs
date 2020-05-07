@@ -9,7 +9,6 @@ namespace PhotoGallery.BLL.DTO
 
         [Required(ErrorMessage = "Name should be specified")]
         [MaxLength(50, ErrorMessage = "Photo name should be less than 50 characters")]
-        [RegularExpression(@"^(?!\s*$).+$", ErrorMessage = "Description cannot be blank")]
         public string Name { get; set; }
     }
 }

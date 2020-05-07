@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Album } from 'src/app/models/album';
+import { AlbumService } from '../../services/album.service';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-album-get-all',
@@ -11,12 +13,12 @@ export class AlbumGetAllComponent implements OnInit {
 
   albums: Album[];
 
-  constructor() { }
+  constructor(private albumService: AlbumService) { }
 
   ngOnInit(): void {
-
-    this.albums = [{ Id: 0, Created: null, Description: "lalalal", Name: "LOl", Updated: null }];
-
+    this.albumService.getAlbums()
+      .pipe(first())
+      .subscribe(albums => { this.albums = albums; });
   }
 
   Remove(index: number)

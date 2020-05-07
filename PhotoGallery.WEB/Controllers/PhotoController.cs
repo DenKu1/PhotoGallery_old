@@ -83,7 +83,7 @@ namespace PhotoGallery.WEB.Controllers
                 return BadRequest(e.Message);
             }
 
-            return CreatedAtAction(nameof(GetPhoto), new { id = photoDTO.Id }, photoDTO);
+            return Ok();
         }
 
         [HttpPost]

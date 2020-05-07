@@ -80,8 +80,7 @@ namespace PhotoGallery.WEB
                 app.UseHsts();
             }
 
-            app.UseCors
-            (builder => builder.WithOrigins("http://localhost:5001")
+            app.UseCors(builder => builder.WithOrigins("http://localhost:5001")
                 .AllowAnyHeader()
                 .AllowAnyMethod());
 
@@ -106,8 +105,8 @@ namespace PhotoGallery.WEB
 
                 if (env.IsDevelopment())
                 {
-                    //spa.UseAngularCliServer(npmScript: "start");
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    spa.UseAngularCliServer(npmScript: "start");
+                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
                 }
             });
         }

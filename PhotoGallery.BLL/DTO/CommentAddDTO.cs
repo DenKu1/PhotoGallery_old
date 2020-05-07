@@ -9,7 +9,6 @@ namespace PhotoGallery.BLL.DTO
 
         [Required]
         [MaxLength(300, ErrorMessage = "Comment must be less than 300 symbols")]
-        [RegularExpression(@"^(?!\s*$).+$", ErrorMessage = "Comment cannot be blank")]
         public string Text { get; set; }
     }
 }

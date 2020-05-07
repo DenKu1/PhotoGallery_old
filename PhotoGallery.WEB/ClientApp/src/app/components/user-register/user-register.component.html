@@ -2,46 +2,61 @@
   <div class="col-md-4"></div>
   <div class="col-md-4">
     <div class="card my-5 bg-light shadow-lg">
-      <form [formGroup]="authService.signUpForm" (submit)="onSubmit()">
+      <form [formGroup]="registerForm" (submit)="onSubmit()">
         <div class="card-header text-center">
           <h2 class="card-title text-primary">Sign up</h2>
         </div>
         <div class="card-body">
           <div class="form-group">
             <label for="UserName">Username</label>
-            <input type="text" class="form-control" placeholder="Enter username" formControlName="UserName" id="UserName" name="UserName">
-            <span class="text-danger" *ngIf="authService.signUpForm.get('UserName').touched && authService.signUpForm.get('UserName').errors?.required">This field is required</span>
+            <input type="text" class="form-control" placeholder="Enter username" formControlName="UserName" id="UserName">
+            <span *ngIf="submitted && f.UserName.errors" class="text-danger">
+              <span *ngIf="f.UserName.errors.required">UserName is required</span>
+              <span *ngIf="f.UserName.errors.minlength">Min length is 4 symbols</span>
+              <span *ngIf="f.UserName.errors.maxlength">Max length is 50 symbols</span>
+            </span>
           </div>
           <div class="form-group">
             <label for="Email">Email</label>
-            <input type="email" class="form-control" placeholder="Enter email" formControlName="Email" id="Email" name="Email">
-            <span class="text-danger" *ngIf="authService.signUpForm.get('Email').touched && authService.signUpForm.get('Email').errors?.required">This field is required</span>
-            <span class="text-danger" *ngIf="authService.signUpForm.get('Email').touched && authService.signUpForm.get('Email').errors?.email">Invalid email addres</span>
+            <input type="email" class="form-control" placeholder="Enter email" formControlName="Email" id="Email">
+            <span *ngIf="submitted && f.Email.errors" class="text-danger">
+              <span *ngIf="f.Email.errors.required">UserName is required</span>
+              <span *ngIf="f.Email.errors.email">Email format is incorrect</span>
+              <span *ngIf="f.Email.errors.maxlength">Max length is 50 symbols</span>
+            </span>
+          </div>          
+          <div class="form-group">
+            <label for="Password">Password</label>
+            <input type="password" class="form-control" placeholder="Enter password" formControlName="Password" id="Password">
+            <span *ngIf="submitted && f.Password.errors" class="text-danger">
+              <span *ngIf="f.Password.errors.required">Password is required</span>
+              <span *ngIf="f.Password.errors.minlength">Min length is 4 symbols</span>
+              <span *ngIf="f.Password.errors.maxlength">Max length is 50 symbols</span>
+            </span>
           </div>
-          <div formGroupName="Passwords">
-            <div class="form-group">
-              <label for="Password">Password</label>
-              <input type="password" class="form-control" placeholder="Enter password" formControlName="Password" id="Password" name="Password">
-              <span class="text-danger" *ngIf="authService.signUpForm.get('Passwords.Password').touched && authService.signUpForm.get('Passwords.Password').errors?.required">This field is required</span>
-              <span class="text-danger" *ngIf="authService.signUpForm.get('Passwords.Password').touched && authService.signUpForm.get('Passwords.Password').errors?.minlength">Minimum 4 characters required</span>
-            </div>
-            <div class="form-group">
-              <label for="ConfirmPassword">Re-enter password</label>
-              <input type="password" class="form-control" placeholder="Enter password again" formControlName="ConfirmPassword" id="ConfirmPassword" name="ConfirmPassword">
-              <span class="text-danger" *ngIf="authService.signUpForm.get('Passwords.ConfirmPassword').touched && authService.signUpForm.get('Passwords.ConfirmPassword').errors?.required">This field is required</span>
-              <span class="text-danger" *ngIf="authService.signUpForm.get('Passwords.ConfirmPassword').touched && authService.signUpForm.get('Passwords.ConfirmPassword').errors?.passwordMismatch">Passwords are different.</span>
-            </div>
+          <div class="form-group">
+            <label for="ConfirmPassword">Re-enter password</label>
+            <input type="password" class="form-control" placeholder="Enter password again" formControlName="ConfirmPassword" id="ConfirmPassword">
+            <span *ngIf="submitted && f.ConfirmPassword.errors" class="text-danger">
+              <span *ngIf="f.ConfirmPassword.errors.required">Password confirmation is required</span>
+              <span *ngIf="f.ConfirmPassword.errors.minlength">Min length is 4 symbols</span>
+              <span *ngIf="f.ConfirmPassword.errors.maxlength">Max length is 50 symbols</span>
+              <span *ngIf="f.ConfirmPassword.errors.mustmatch">Passwords are different</span>
+            </span>
           </div>
+          <span *ngIf="error" class="text-danger">{{error}}</span>
           <hr class="mx-4">
           <div>
             <p class="text-center font-weight-light mb-0">
               I have an account.
-              <a href="#">Login here</a>
+              <a [routerLink]="['/login']">Login here</a>
             </p>
           </div>
         </div>
         <div class="card-footer">
-          <button [disabled]="!authService.signUpForm.valid" type="submit" class="btn btn-block btn-outline-secondary">Sign up</button>
+          <button [disabled]="loading" type="submit" class="btn btn-block btn-outline-secondary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>Sign up
+          </button>
         </div>
       </form>
     </div>
