@@ -26,36 +26,36 @@ namespace PhotoGallery.WEB.Controllers
         [Route("api/albums/{id}/photos")]
         public async Task<ActionResult<IEnumerable<PhotoDTO>>> GetPhotos(int id)
         {
-            IEnumerable<PhotoDTO> photos;           
+            IEnumerable<PhotoDTO> photoDTOs;           
 
             try
             {
-                photos = await _photoService.GetPhotosAsync(id);
+                photoDTOs = await _photoService.GetPhotosAsync(id);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
 
-            return Ok(photos);
+            return Ok(photoDTOs);
         }
 
         [HttpGet]
         [Route("api/photos/{id}")]
         public async Task<ActionResult<PhotoDTO>> GetPhoto(int id)
         {
-            PhotoDTO photo;
+            PhotoDTO photoDTO;
 
             try
             {
-                photo = await _photoService.GetPhotoAsync(id);
+                photoDTO = await _photoService.GetPhotoAsync(id);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
 
-            return Ok(photo);
+            return Ok(photoDTO);
         }
 
         [HttpPost]
@@ -83,7 +83,7 @@ namespace PhotoGallery.WEB.Controllers
                 return BadRequest(e.Message);
             }
 
-            return Ok();
+            return Ok(photoDTO);
         }
 
         [HttpPost]

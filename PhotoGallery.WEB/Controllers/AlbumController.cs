@@ -28,18 +28,18 @@ namespace PhotoGallery.WEB.Controllers
         [Authorize(Roles = "User")]
         public async Task<ActionResult<IEnumerable<AlbumDTO>>> GetAlbums(int id)
         {
-            IEnumerable<AlbumDTO> albums;
+            IEnumerable<AlbumDTO> albumDTOs;
 
             try
             {
-                albums = await _albumService.GetAlbumsAsync(id);
+                albumDTOs = await _albumService.GetAlbumsAsync(id);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
 
-            return Ok(albums);
+            return Ok(albumDTOs);
         }
 
         [HttpGet]
