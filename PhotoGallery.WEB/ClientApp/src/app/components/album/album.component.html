@@ -12,38 +12,82 @@
     <div class="col-md-8 my-main-section">
       <div class="container" id="get-albums">
         <!--GetAlbums-->
-        <div *ngIf="albums.length == 0" class="alert alert-info text-center mt-4">
-          <h4>You haven`t added albums yet</h4>
+        <div *ngIf="!albums || albums.length == 0" class="alert alert-info text-center mt-4">
+          <h4>You haven`t added albums yet!</h4>
         </div>
-        <div *ngIf="albums.length != 0">
+        <div *ngIf="albums">
           <div *ngFor="let album of albums;let i = index">
             <div class="card my-3">
               <div class="card-body">
-                <h3 class="card-title d-inline-block">{{album.Name}}</h3>
+                <h3 class="card-title d-inline-block">{{album.name}}</h3>
                 <!-- Button to Open the Modal -->
                 <button type="button" class="form__button" data-toggle="modal" data-target="#albumEditNameModal"><i class="fas fa-edit"></i></button>
                 <br>
                 <!-- Button to Open the Modal -->
-                <p class="card-text d-inline-block">{{album.Description}}</p>
-                <button type="button" class="form__button" data-toggle="modal" data-target="#albumEditDescriptionModal"><i class="fas fa-edit"></i></button>
-                <p class="card-text">Created: {{album.Created}}</p>
-                <p class="card-text">Last updated: {{album.Updated}}</p>
+                <div>
+                  <p class="card-text d-inline-block">{{album.description || "No description provided"}}</p>
+                  <button type="button" class="form__button" data-toggle="modal" data-target="#albumEditDescriptionModal"><i class="fas fa-edit"></i></button>
+                </div>
+                <p class="card-text">Created: {{album.created | date}}</p>
+                <p class="card-text">Last updated: {{album.updated | date}}</p>
               </div>
               <div class="card-footer">
-                <a [routerLink]="['/photos', album.Id]" class="btn btn-info px-5">Open</a>
-                <button (click)="Remove(i)" class="btn btn-danger float-right">Delete</button>
+                <a [routerLink]="['/photos', album.id]" class="btn btn-info px-5">Open</a>
+                <button (click)="deleteAlbum(album.id, i)" class="btn btn-danger float-right">Delete</button>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
     <div class="col-md-2 my-side-colon"></div>
   </div>
 </div>
 <!--AddAlbumModal-->
-
+<div class="modal fade" id="createAlbumModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form [formGroup]="crInfo.form" (submit)="createAlbum()">
+        <div class="modal-header">
+          <h4 class="modal-title">Create album</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="crName">Name</label>
+            <input type="text" class="form-control" placeholder="Enter here name of album" formControlName="name" id="crName">
+            <span *ngIf="crInfo.submitted && crInfo.f.name.errors" class="text-danger">
+              <span *ngIf="crInfo.f.name.errors.required">Name is required</span>
+              <span *ngIf="crInfo.f.name.errors.maxlength">Max length is 50 symbols</span>
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="crDescription">Description</label>
+            <input type="text" class="form-control" placeholder="Enter here description of album" formControlName="description" id="crDescription">
+            <span *ngIf="crInfo.submitted && crInfo.f.description.errors" class="text-danger">
+              <span *ngIf="crInfo.f.description.errors.maxlength">Max length is 200 symbols</span>
+            </span>
+          </div>
+        </div>
+        <div style="min-height: 56px;">
+          <div *ngIf="crInfo.success" class="alert alert-success alert-dismissible fade show mx-3">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{crInfo.success}}
+          </div>
+          <div *ngIf="crInfo.error" class="alert alert-danger alert-dismissible fade show mx-3">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{crInfo.error}}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" [disabled]="loading" class="btn btn-success">
+            <span *ngIf="crInfo.loading" class="spinner-border spinner-border-sm mr-1"></span>Create
+          </button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 <!--AlbumEditNameModal-->
 
 <!--AlbumEditDescriptionModal-->

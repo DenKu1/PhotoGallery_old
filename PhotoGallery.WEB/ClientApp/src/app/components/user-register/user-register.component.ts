@@ -28,13 +28,13 @@ export class UserRegisterComponent implements OnInit {
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
-      UserName: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
-      Email: ['', [Validators.required, Validators.email, Validators.maxLength(50)]],
-      Password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
-      ConfirmPassword: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]]
+      userName: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(50)]],
+      password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
+      confirmPassword: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]]
     },
     {
-      validator: this.mustMatch('Password', 'ConfirmPassword')
+      validator: this.mustMatch('password', 'confirmPassword')
     });
   }
 
@@ -47,7 +47,7 @@ export class UserRegisterComponent implements OnInit {
     }
 
     this.loading = true;
-    this.userService.register(this.f.UserName.value, this.f.Email.value, this.f.Password.value)
+    this.userService.register(this.f.userName.value, this.f.email.value, this.f.password.value)
       .pipe(first())
       .subscribe(
         () => {

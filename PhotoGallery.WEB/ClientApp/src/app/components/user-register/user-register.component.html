@@ -8,40 +8,40 @@
         </div>
         <div class="card-body">
           <div class="form-group">
-            <label for="UserName">Username</label>
-            <input type="text" class="form-control" placeholder="Enter username" formControlName="UserName" id="UserName">
-            <span *ngIf="submitted && f.UserName.errors" class="text-danger">
-              <span *ngIf="f.UserName.errors.required">UserName is required</span>
-              <span *ngIf="f.UserName.errors.minlength">Min length is 4 symbols</span>
-              <span *ngIf="f.UserName.errors.maxlength">Max length is 50 symbols</span>
+            <label for="userName">Username</label>
+            <input type="text" class="form-control" placeholder="Enter username" formControlName="userName" id="userName">
+            <span *ngIf="submitted && f.userName.errors" class="text-danger">
+              <span *ngIf="f.userName.errors.required">UserName is required</span>
+              <span *ngIf="f.userName.errors.minlength">Min length is 4 symbols</span>
+              <span *ngIf="f.userName.errors.maxlength">Max length is 50 symbols</span>
             </span>
           </div>
           <div class="form-group">
-            <label for="Email">Email</label>
-            <input type="email" class="form-control" placeholder="Enter email" formControlName="Email" id="Email">
-            <span *ngIf="submitted && f.Email.errors" class="text-danger">
-              <span *ngIf="f.Email.errors.required">UserName is required</span>
-              <span *ngIf="f.Email.errors.email">Email format is incorrect</span>
-              <span *ngIf="f.Email.errors.maxlength">Max length is 50 symbols</span>
+            <label for="email">Email</label>
+            <input type="email" class="form-control" placeholder="Enter email" formControlName="email" id="email">
+            <span *ngIf="submitted && f.email.errors" class="text-danger">
+              <span *ngIf="f.email.errors.required">Email is required</span>
+              <span *ngIf="f.email.errors.email">Email format is incorrect</span>
+              <span *ngIf="f.email.errors.maxlength">Max length is 50 symbols</span>
             </span>
           </div>          
           <div class="form-group">
-            <label for="Password">Password</label>
-            <input type="password" class="form-control" placeholder="Enter password" formControlName="Password" id="Password">
-            <span *ngIf="submitted && f.Password.errors" class="text-danger">
-              <span *ngIf="f.Password.errors.required">Password is required</span>
-              <span *ngIf="f.Password.errors.minlength">Min length is 4 symbols</span>
-              <span *ngIf="f.Password.errors.maxlength">Max length is 50 symbols</span>
+            <label for="password">Password</label>
+            <input type="password" class="form-control" placeholder="Enter password" formControlName="password" id="password">
+            <span *ngIf="submitted && f.password.errors" class="text-danger">
+              <span *ngIf="f.password.errors.required">Password is required</span>
+              <span *ngIf="f.password.errors.minlength">Min length is 4 symbols</span>
+              <span *ngIf="f.password.errors.maxlength">Max length is 50 symbols</span>
             </span>
           </div>
           <div class="form-group">
-            <label for="ConfirmPassword">Re-enter password</label>
-            <input type="password" class="form-control" placeholder="Enter password again" formControlName="ConfirmPassword" id="ConfirmPassword">
-            <span *ngIf="submitted && f.ConfirmPassword.errors" class="text-danger">
-              <span *ngIf="f.ConfirmPassword.errors.required">Password confirmation is required</span>
-              <span *ngIf="f.ConfirmPassword.errors.minlength">Min length is 4 symbols</span>
-              <span *ngIf="f.ConfirmPassword.errors.maxlength">Max length is 50 symbols</span>
-              <span *ngIf="f.ConfirmPassword.errors.mustmatch">Passwords are different</span>
+            <label for="confirmPassword">Re-enter password</label>
+            <input type="password" class="form-control" placeholder="Enter password again" formControlName="confirmPassword" id="confirmPassword">
+            <span *ngIf="submitted && f.confirmPassword.errors" class="text-danger">
+              <span *ngIf="f.confirmPassword.errors.required">Password confirmation is required</span>
+              <span *ngIf="f.confirmPassword.errors.minlength">Min length is 4 symbols</span>
+              <span *ngIf="f.confirmPassword.errors.maxlength">Max length is 50 symbols</span>
+              <span *ngIf="f.confirmPassword.errors.mustmatch">Passwords are different</span>
             </span>
           </div>
           <span *ngIf="error" class="text-danger">{{error}}</span>

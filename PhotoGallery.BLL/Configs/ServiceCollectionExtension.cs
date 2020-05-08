@@ -25,7 +25,7 @@ namespace PhotoGallery.BLL.Configs
                 .AddEntityFrameworkStores<GalleryContext>();
 
             services.AddDbContext<GalleryContext>(options =>
-                    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("PhotoGallery.DAL")));
+                    options.UseLazyLoadingProxies().UseSqlServer(connectionString, b => b.MigrationsAssembly("PhotoGallery.DAL")));
 
             services.AddScoped<IAlbumRepository, AlbumRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();

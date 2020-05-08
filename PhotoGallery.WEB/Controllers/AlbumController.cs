@@ -71,7 +71,10 @@ namespace PhotoGallery.WEB.Controllers
                 return BadRequest(ModelState);
             }
 
-            albumAddDTO.UserId = UserId;
+            if (albumAddDTO.UserId != UserId)
+            {
+                return BadRequest();
+            }
 
             AlbumDTO albumDTO;
 

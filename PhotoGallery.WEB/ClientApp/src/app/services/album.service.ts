@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { UserService } from './user.service';
 import { Album } from '../models/album';
 import { User } from '../models/user';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -15,27 +16,32 @@ export class AlbumService {
   constructor(
     private http: HttpClient,
     private userService: UserService
-  )
-  {
+  ) {
     this.userService.currentUser.subscribe(x => this.currentUser = x);
   }
 
-  getAlbums() {
-    return this.http.get<Album[]>(`${environment.apiUrl}/users/${this.currentUser.id}/albums`);
-  }
-  /*
-  createBid(body) {
-    return this.http.post(this.rootUrl + '/bids', body);
+  getAlbums(id: number = this.currentUser.id): Observable<Album[]> {
+    return this.http.get<Album[]>(`${environment.apiUrl}/users/${id}/albums`);
   }
 
-  getBidsByUser(): Observable<Bid[]> {
-    return this.http.get<Bid[]>(this.rootUrl + '/users/profile/bids');
+  getAlbum(id: number = this.currentUser.id): Observable<Album> {
+    return this.http.get<Album>(`${environment.apiUrl}/albums/${id}`)
   }
 
-  deleteBid(id) {
-    return this.http.delete(this.rootUrl + '/bids/' + id);
+  createAlbum(name: string, description: string): Observable<Album> {
+    return this.http.post<Album>(`${environment.apiUrl}/albums`, { userId: this.currentUser.id, name, description })
   }
-  */
-  
+
+  updateAlbum(id: number, name: string = null, description: string = null): Observable<Album> {
+    if (name === null && description === null) {
+      return;
+    }
+
+    return this.http.put<Album>(`${environment.apiUrl}/albums/${id}`, { id, name, description })
+  }
+
+  deleteAlbum(id: number) {
+    return this.http.delete(`${environment.apiUrl}/albums/${id}`)
+  }
 }
 

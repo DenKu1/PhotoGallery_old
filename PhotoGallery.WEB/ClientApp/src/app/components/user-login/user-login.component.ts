@@ -30,8 +30,8 @@ export class UserLoginComponent implements OnInit {
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-      UserName: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
-      Password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]]
+      userName: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
+      password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]]
     });
   }
 
@@ -44,7 +44,7 @@ export class UserLoginComponent implements OnInit {
     }
 
     this.loading = true;
-    this.userService.login(this.f.UserName.value, this.f.Password.value)
+    this.userService.login(this.f.userName.value, this.f.password.value)
       .pipe(first())
       .subscribe(
         () => {

@@ -8,21 +8,17 @@
         </div>
         <div class="card-body">
           <div class="form-group">
-            <label for="UserName">Username</label>
-            <input type="text" class="form-control" placeholder="Enter username" formControlName="UserName" id="UserName">
-            <span *ngIf="submitted && f.UserName.errors" class="text-danger">
-              <span *ngIf="f.UserName.errors.required">Username is required</span>
-              <span *ngIf="f.UserName.errors.minlength">Min length is 4 symbols</span>
-              <span *ngIf="f.UserName.errors.maxlength">Max length is 50 symbols</span>
-            </span>
+            <label for="userName">Username</label>
+            <input type="text" class="form-control" placeholder="Enter username" formControlName="userName" id="userName">
+            Enter here name of album
           </div>
           <div class="form-group">
-            <label for="Password">Password</label>
-            <input type="password" class="form-control" placeholder="Enter password" formControlName="Password" id="Password">
-            <span *ngIf="submitted && f.Password.errors" class="text-danger">
-              <span *ngIf="f.Password.errors.required">Password is required</span>
-              <span *ngIf="f.Password.errors.minlength">Min length is 4 symbols</span>
-              <span *ngIf="f.Password.errors.maxlength">Max length is 50 symbols</span>
+            <label for="password">Password</label>
+            <input type="password" class="form-control" placeholder="Enter password" formControlName="password" id="password">
+            <span *ngIf="submitted && f.password.errors" class="text-danger">
+              <span *ngIf="f.password.errors.required">Password is required</span>
+              <span *ngIf="f.password.errors.minlength">Min length is 4 symbols</span>
+              <span *ngIf="f.password.errors.maxlength">Max length is 50 symbols</span>
             </span>
           </div>
           <span *ngIf="error" class="text-danger">{{error}}</span>
