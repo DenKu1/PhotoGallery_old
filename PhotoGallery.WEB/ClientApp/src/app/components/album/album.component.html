@@ -21,12 +21,12 @@
               <div class="card-body">
                 <h3 class="card-title d-inline-block">{{album.name}}</h3>
                 <!-- Button to Open the Modal -->
-                <button type="button" class="form__button" data-toggle="modal" data-target="#albumEditNameModal"><i class="fas fa-edit"></i></button>
+                <button type="button" class="form__button" (click)="upInfo.initialize(album)" data-toggle="modal" data-target="#updateAlbumModal"><i class="fas fa-edit"></i></button>
                 <br>
                 <!-- Button to Open the Modal -->
                 <div>
                   <p class="card-text d-inline-block">{{album.description || "No description provided"}}</p>
-                  <button type="button" class="form__button" data-toggle="modal" data-target="#albumEditDescriptionModal"><i class="fas fa-edit"></i></button>
+                  <button type="button" class="form__button" (click)="upInfo.initialize(album)" data-toggle="modal" data-target="#updateAlbumModal"><i class="fas fa-edit"></i></button>
                 </div>
                 <p class="card-text">Created: {{album.created | date}}</p>
                 <p class="card-text">Last updated: {{album.updated | date}}</p>
@@ -79,7 +79,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" [disabled]="loading" class="btn btn-success">
+          <button type="submit" [disabled]="loading || !crInfo.form.touched" class="btn btn-success">
             <span *ngIf="crInfo.loading" class="spinner-border spinner-border-sm mr-1"></span>Create
           </button>
           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -88,8 +88,49 @@
     </div>
   </div>
 </div>
-<!--AlbumEditNameModal-->
-
-<!--AlbumEditDescriptionModal-->
-
+<!--AlbumUpdateModal-->
+<div class="modal fade" id="updateAlbumModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form [formGroup]="upInfo.form" (submit)="updateAlbum()">
+        <div class="modal-header">
+          <h4 class="modal-title">Edit album</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="upName">Name</label>
+            <input type="text" class="form-control" placeholder="Enter here new name of album" formControlName="name" id="upName">
+            <span *ngIf="upInfo.submitted && upInfo.f.name.errors" class="text-danger">
+              <span *ngIf="upInfo.f.name.errors.required">Name is required</span>
+              <span *ngIf="upInfo.f.name.errors.maxlength">Max length is 50 symbols</span>
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="upDescription">Description</label>
+            <input type="text" class="form-control" placeholder="Enter here new description of album" formControlName="description" id="upDescription">
+            <span *ngIf="upInfo.submitted && upInfo.f.description.errors" class="text-danger">
+              <span *ngIf="upInfo.f.description.errors.maxlength">Max length is 200 symbols</span>
+            </span>
+          </div>
+        </div>
+        <div style="min-height: 56px;">
+          <div *ngIf="upInfo.success" class="alert alert-info alert-dismissible fade show mx-3">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{upInfo.success}}
+          </div>
+          <div *ngIf="upInfo.error" class="alert alert-danger alert-dismissible fade show mx-3">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{upInfo.error}}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" [disabled]="loading || !upInfo.form.touched" class="btn btn-primary px-3">
+            <span *ngIf="upInfo.loading" class="spinner-border spinner-border-sm mr-1"></span>Edit
+          </button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 <div class="fake-footer"></div>
