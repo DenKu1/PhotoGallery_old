@@ -5,7 +5,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
@@ -33,11 +32,30 @@ namespace PhotoGallery.BLL.Services
             return _mp.Map<IEnumerable<UserDTO>>(users);
         }
 
+        public async Task<UserDTO> GetUserByUserNameAsync(string userName)
+        {
+            if (userName == null)
+            {
+                throw null;
+            }
+
+            var user = await _unit.Users.GetByUserNameAsync(userName);
+
+            if (user == null)
+            {
+                throw new ValidationException("User was not found");
+            }
+
+            var userDTO = _mp.Map<UserDTO>(user);
+          
+            return userDTO;
+        }
+
         public async Task CreateUserAsync(UserRegisterDTO data)
         {
             if (data == null)
             {
-                throw new ArgumentNullException();
+                throw null;
             }
 
             if (await _unit.UserManager.FindByEmailAsync(data.Email) != null)
@@ -74,15 +92,15 @@ namespace PhotoGallery.BLL.Services
             return (GenerateJwtToken(user, roles), _mp.Map<UserDTO>(user));
         }       
 
-        public async Task<UserDTO> GetUserProfileAsync(string userId)
-        {
-            var user = await _unit.UserManager.FindByIdAsync(userId);
-            return _mp.Map<UserDTO>(user);
-        }
-
         public async Task DeleteUserAsync(int id)
         {
             var user = await _unit.UserManager.FindByIdAsync(id.ToString());
+
+            if (user == null)
+            {
+                throw new ValidationException("User was not found");
+            }
+
             await _unit.UserManager.DeleteAsync(user);
         }
 

@@ -1,1 +1,168 @@
-<p>photo works! Id: {{id}}</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 my-side-colon">
+      <div *ngIf="isOwned" class="jumbotron jumbotron-fluid py-4">
+        <div class="container text-center">
+          <h4>Add photo:</h4>
+          <!--Button to open photo add modal-->
+          <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#createPhotoModal">New photo</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8 my-main-section">
+      <div class="container">
+        <div *ngIf="album" class="card my-3">
+          <div class="card-body">
+            <h3>You opened album: {{album.name}}</h3>
+            <p *ngIf="album.description">{{album.description}}</p>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="container">
+        <!--Get photos-->
+        <div *ngIf="!photos || photos.length == 0" class="alert alert-info text-center mt-4">
+          <h4>Album is empty</h4>
+        </div>
+        <div *ngIf="photos">
+          <div *ngFor="let photo of photos;let i = index">
+            <div class="card bg-light my-3">
+              <div class="card-header bg-light">
+                <button *ngIf="isOwned" (click)="deletePhoto(photo.id, i)" class="close my-close">x</button>
+                <h3 class="d-inline-block" >{{photo.name}}</h3>
+                <!--Button to open photo update modal-->
+                <button *ngIf="isOwned" type="button" class="form__button" (click)="upInfo.initialize(photo)" data-toggle="modal" data-target="#updatePhotoModal"><i class="fas fa-edit"></i></button>
+                <p class="font-weight-light">{{photo.created | date}}</p>
+              </div>
+              <div class="card-body">
+                <img class="img-fluid my-image" src="{{photo.path}}" alt="{{photo.name}}">
+                <div class="mt-3 ml-2">
+                  <button class="my-photo-at" (click)="likePhoto(photo)">
+                    <i *ngIf="photo.isLiked" class="fas fa-heart"></i>
+                    <i *ngIf="!photo.isLiked" class="far fa-heart"></i>
+                    <span class="ml-2">{{photo.likes}}</span>
+                  </button>
+                  <button class="my-photo-at" (click)="getComments(photo)">
+                    <i *ngIf="photo.comments" class="fas fa-comment"></i>
+                    <i *ngIf="!photo.comments" class="far fa-comment"></i>                    
+                  </button>
+                </div>
+              </div>
+              <div class="card-footer bg-light">
+                <!--Get comments-->
+                <div *ngIf="photo.comments">
+                  <p>{{photo.comments.length}} comments</p>
+                  <div *ngFor="let comment of photo.comments;let j = index">
+                    <button *ngIf="isCommentOwned(comment.userId)" (click)="deleteComment(comment.id, i, j)" class="close">x</button>
+                    <p class="font-weight-bolder mb-1 mt-3">{{comment.userName}}</p>
+                    <p>{{comment.text}}</p>
+                  </div>
+                </div>
+                <!--Add comment-->
+                <form [formGroup]="crCommentInfos[i].form" (submit)="createComment(photo, i)">
+                  <div class="form__group field d-flex">
+                    <input type="text" class="form__field" formControlName="text" id="crText">
+                    <label class="form__label" for="crText">Add comment</label>
+                    <button type="submit" [disabled]="loading" class="form__button">
+                      <span *ngIf="crCommentInfos[i].loading" class="spinner-border spinner-border-sm mr-1"></span>Post
+                    </button>
+                  </div>
+                  <div *ngIf="crCommentInfos[i].submitted && crCommentInfos[i].f.text.errors" class="text-danger">
+                    <span *ngIf="crCommentInfos[i].f.text.errors.required"><small>Text is required</small></span>
+                    <span *ngIf="crCommentInfos[i].f.text.errors.maxlength"><small>Max length is 200 symbols</small></span>
+                  </div>
+                </form>            
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2 my-side-colon"></div>
+  </div>
+</div>
+<!--Add photo modal-->
+<div *ngIf="isOwned" class="modal fade" id="createPhotoModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form [formGroup]="crInfo.form" (submit)="createPhoto()">
+        <div class="modal-header">
+          <h4 class="modal-title">Add photo</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="crName">Name</label>
+            <input type="text" class="form-control" placeholder="Enter here name of photo" formControlName="name" id="crName">
+            <span *ngIf="crInfo.submitted && crInfo.f.name.errors" class="text-danger">
+              <span *ngIf="crInfo.f.name.errors.required">Name is required</span>
+              <span *ngIf="crInfo.f.name.errors.maxlength">Max length is 50 symbols</span>
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="crPath">Path</label>
+            <input type="text" class="form-control" placeholder="Enter here path" formControlName="path" id="crPath">
+            <span *ngIf="crInfo.submitted && crInfo.f.path.errors" class="text-danger">
+              <span *ngIf="crInfo.f.path.errors.required">Path is required</span>
+              <span *ngIf="crInfo.f.path.errors.maxlength">Max length is 200 symbols</span>
+            </span>
+          </div>
+        </div>
+        <div style="min-height: 56px;">
+          <div *ngIf="crInfo.success" class="alert alert-success alert-dismissible fade show mx-3">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{crInfo.success}}
+          </div>
+          <div *ngIf="crInfo.error" class="alert alert-danger alert-dismissible fade show mx-3">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{crInfo.error}}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" [disabled]="loading || !crInfo.form.touched" class="btn btn-success px-3">
+            <span *ngIf="crInfo.loading" class="spinner-border spinner-border-sm mr-1"></span>Add
+          </button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!--Update photo modal-->
+<div *ngIf="isOwned" class="modal fade" id="updatePhotoModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form [formGroup]="upInfo.form" (submit)="updatePhoto()">
+        <div class="modal-header">
+          <h4 class="modal-title">Edit photo</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="upName">Name</label>
+            <input type="text" class="form-control" placeholder="Enter here new name of photo" formControlName="name" id="upName">
+            <span *ngIf="upInfo.submitted && upInfo.f.name.errors" class="text-danger">
+              <span *ngIf="upInfo.f.name.errors.required">Name is required</span>
+              <span *ngIf="upInfo.f.name.errors.maxlength">Max length is 50 symbols</span>
+            </span>
+          </div>
+        </div>
+        <div style="min-height: 56px;">
+          <div *ngIf="upInfo.success" class="alert alert-info alert-dismissible fade show mx-3">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{upInfo.success}}
+          </div>
+          <div *ngIf="upInfo.error" class="alert alert-danger alert-dismissible fade show mx-3">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{upInfo.error}}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" [disabled]="loading || !upInfo.form.touched" class="btn btn-primary px-3">
+            <span *ngIf="upInfo.loading" class="spinner-border spinner-border-sm mr-1"></span>Edit
+          </button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="fake-footer"></div>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using PhotoGallery.BLL.DTO;
@@ -49,7 +50,7 @@ namespace PhotoGallery.BLL.Services
             return _mp.Map<PhotoDTO>(photo);
         }
 
-        public async Task<PhotoDTO> GetPhotoAsync(int photoId)
+        public async Task<PhotoDTO> GetPhotoAsync(int photoId, int userId)
         {
             var photo = await _unit.Photos.GetByIdAsync(photoId);
 
@@ -58,10 +59,15 @@ namespace PhotoGallery.BLL.Services
                 throw new ValidationException("Photo was not found");
             }
 
-            return _mp.Map<PhotoDTO>(photo);
+            var photoDTO = _mp.Map<PhotoDTO>(photo);  
+
+            photoDTO.Likes = photo.Likes.Count();
+            photoDTO.IsLiked = photo.Likes.Any(l => l.UserId == userId);
+
+            return photoDTO;
         }
 
-        public async Task<IEnumerable<PhotoDTO>> GetPhotosAsync(int albumId)
+        public async Task<IEnumerable<PhotoDTO>> GetPhotosAsync(int albumId, int userId)
         {
             var album = await _unit.Albums.GetByIdAsync(albumId);
 
@@ -71,8 +77,19 @@ namespace PhotoGallery.BLL.Services
             }
 
             var photos = album.Photos;
+            var photoDTOs = new List<PhotoDTO>();
 
-            return _mp.Map<IEnumerable<PhotoDTO>>(photos);
+            foreach (var photo in photos)
+            {
+                var photoDTO = _mp.Map<PhotoDTO>(photo);
+
+                photoDTO.Likes = photo.Likes.Count();
+                photoDTO.IsLiked = photo.Likes.Any(l => l.UserId == userId);
+
+                photoDTOs.Add(photoDTO);
+            }
+
+            return photoDTOs;
         }
 
         public async Task RemovePhotoAsync(int photoId, int userId)
@@ -131,8 +148,7 @@ namespace PhotoGallery.BLL.Services
                 throw new ValidationException("Photo was not found");
             }
 
-            Like like = await _unit.Likes.SingleOrDefaultAsync(
-                l => l.PhotoId == photoId && l.UserId == userId);
+            Like like = await _unit.Likes.SingleOrDefaultAsync(l => l.PhotoId == photoId && l.UserId == userId);
 
             if (like == null)
             {

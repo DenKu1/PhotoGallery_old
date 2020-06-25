@@ -22,10 +22,84 @@ body {
 }
 
 .my-photo-at {
+  background-color: transparent;
   font-size: 2rem;
+  color: #007bff;
+  border: none;
+}
+
+.my-photo-at:focus {
+  outline: none;
 }
 
 .my-image {
   max-width: 100%;
   height: auto;
+}
+
+/*Comment input*/
+.form__group {
+  position: relative;
+  padding: 15px 0 0;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.form__field {
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid #9b9b9b;
+  outline: 0;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+
+.form__field::placeholder {
+  color: transparent;
+}
+
+.form__field:placeholder-shown ~ .form__label {
+  cursor: text;
+  top: 20px;
+}
+
+.form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  color: #9b9b9b;
+}
+
+.form__field:focus {
+  padding-bottom: 6px;
+  border-width: 3px;
+  border-image: linear-gradient(to right, #087bd8, #6bcac4);
+  border-image-slice: 1;
+}
+
+.form__field:focus ~ .form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  color: #087bd8;
+}
+
+.form__button {
+  border: 0;
+  background: 0 0;
+  color: #0095f6;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form__button:focus {
+  outline: none;
+  opacity: .7;
+}
+
+.form__field:required, .form__field:invalid {
+  box-shadow: none;
 }

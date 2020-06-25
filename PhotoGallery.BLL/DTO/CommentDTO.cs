@@ -3,7 +3,6 @@
     public class CommentDTO
     {
         public int Id { get; set; }
-        //in case we need to know IsOwned
         public int UserId { get; set; }
         public int PhotoId { get; set; }
         public string Text { get; set; }

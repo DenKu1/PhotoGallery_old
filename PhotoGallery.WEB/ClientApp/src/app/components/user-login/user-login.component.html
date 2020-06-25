@@ -10,7 +10,11 @@
           <div class="form-group">
             <label for="userName">Username</label>
             <input type="text" class="form-control" placeholder="Enter username" formControlName="userName" id="userName">
-            Enter here name of album
+            <span *ngIf="submitted && f.userName.errors" class="text-danger">
+              <span *ngIf="f.userName.errors.required">Username is required</span>
+              <span *ngIf="f.userName.errors.minlength">Min length is 4 symbols</span>
+              <span *ngIf="f.userName.errors.maxlength">Max length is 50 symbols</span>
+            </span>
           </div>
           <div class="form-group">
             <label for="password">Password</label>
@@ -25,7 +29,7 @@
           <hr class="mx-4">
           <div>
             <p class="text-center font-weight-light mb-0">
-              I still don't have an account. <a [routerLink]="['/register']">Sign up</a>
+              I still don't have an account. <a [routerLink]="['/users/register']">Sign up</a>
             </p>
           </div>
         </div>

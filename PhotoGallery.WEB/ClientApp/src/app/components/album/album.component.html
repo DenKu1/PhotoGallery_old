@@ -1,39 +1,38 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-2 my-side-colon">
-      <div class="jumbotron jumbotron-fluid py-4">
+      <div *ngIf="isOwned" class="jumbotron jumbotron-fluid py-4">
         <div class="container text-center">
           <h4>Create new album:</h4>
-          <!-- Button to Open the Modal -->
+          <!--Button to open album add modal-->
           <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#createAlbumModal">New album</button>
         </div>
       </div>
     </div>
     <div class="col-md-8 my-main-section">
-      <div class="container" id="get-albums">
-        <!--GetAlbums-->
+      <div class="container">
+        <!--Get albums-->
         <div *ngIf="!albums || albums.length == 0" class="alert alert-info text-center mt-4">
-          <h4>You haven`t added albums yet!</h4>
+          <h4 *ngIf="isOwned">You haven`t added albums yet</h4>
+          <h4 *ngIf="!isOwned">User hasn`t added albums yet</h4>
         </div>
         <div *ngIf="albums">
           <div *ngFor="let album of albums;let i = index">
             <div class="card my-3">
               <div class="card-body">
                 <h3 class="card-title d-inline-block">{{album.name}}</h3>
-                <!-- Button to Open the Modal -->
-                <button type="button" class="form__button" (click)="upInfo.initialize(album)" data-toggle="modal" data-target="#updateAlbumModal"><i class="fas fa-edit"></i></button>
+                <!--Button to open album update modal-->
+                <button *ngIf="isOwned" type="button" class="form__button" (click)="upInfo.initialize(album)" data-toggle="modal" data-target="#updateAlbumModal"><i class="fas fa-edit"></i></button>
                 <br>
-                <!-- Button to Open the Modal -->
-                <div>
-                  <p class="card-text d-inline-block">{{album.description || "No description provided"}}</p>
-                  <button type="button" class="form__button" (click)="upInfo.initialize(album)" data-toggle="modal" data-target="#updateAlbumModal"><i class="fas fa-edit"></i></button>
-                </div>
+                <!--Button to open the modal-->
+                <p class="card-text d-inline-block">{{album.description || "No description provided"}}</p>
+                <button *ngIf="isOwned" type="button" class="form__button" (click)="upInfo.initialize(album)" data-toggle="modal" data-target="#updateAlbumModal"><i class="fas fa-edit"></i></button>
                 <p class="card-text">Created: {{album.created | date}}</p>
                 <p class="card-text">Last updated: {{album.updated | date}}</p>
               </div>
               <div class="card-footer">
-                <a [routerLink]="['/photos', album.id]" class="btn btn-info px-5">Open</a>
-                <button (click)="deleteAlbum(album.id, i)" class="btn btn-danger float-right">Delete</button>
+                <a [routerLink]="['/albums', album.id, 'photos']" class="btn btn-info px-5">Open</a>
+                <button *ngIf="isOwned" (click)="deleteAlbum(album.id, i)" class="btn btn-danger float-right">Delete</button>
               </div>
             </div>
           </div>
@@ -43,8 +42,8 @@
     <div class="col-md-2 my-side-colon"></div>
   </div>
 </div>
-<!--AddAlbumModal-->
-<div class="modal fade" id="createAlbumModal">
+<!--Album add modal-->
+<div *ngIf="isOwned" class="modal fade" id="createAlbumModal">
   <div class="modal-dialog">
     <div class="modal-content">
       <form [formGroup]="crInfo.form" (submit)="createAlbum()">
@@ -88,8 +87,8 @@
     </div>
   </div>
 </div>
-<!--AlbumUpdateModal-->
-<div class="modal fade" id="updateAlbumModal">
+<!--Update album modal-->
+<div *ngIf="isOwned" class="modal fade" id="updateAlbumModal">
   <div class="modal-dialog">
     <div class="modal-content">
       <form [formGroup]="upInfo.form" (submit)="updateAlbum()">

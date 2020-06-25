@@ -51,7 +51,7 @@ export class UserRegisterComponent implements OnInit {
       .pipe(first())
       .subscribe(
         () => {
-          this.router.navigate(['login']);
+          this.router.navigate(['/users/login']);
         },
         error => {
           this.error = error.status === 400 ? error.error : "Unknown error!";

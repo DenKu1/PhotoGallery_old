@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { UserService } from 'src/app/services/user.service';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-user-login',
@@ -19,13 +20,16 @@ export class UserLoginComponent implements OnInit {
 
   get f() { return this.loginForm.controls; }
 
+  currentUser: User;
+
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private userService: UserService) {
     // redirect to home if already logged in
-    if (this.userService.currentUserValue) {
-      this.router.navigate(['albums']);
+    this.userService.currentUser.subscribe(x => this.currentUser = x);
+    if (this.currentUser) {
+      this.router.navigate(['/users', this.currentUser.id, 'albums']);
     }}
 
   ngOnInit() {
@@ -48,7 +52,7 @@ export class UserLoginComponent implements OnInit {
       .pipe(first())
       .subscribe(
         () => {
-          this.router.navigate(['albums']);
+          this.router.navigate(['/users', this.currentUser.id, 'albums']);
         },
         err => {
           this.error = err.status === 400 ? err.error : "Unknown error!";         

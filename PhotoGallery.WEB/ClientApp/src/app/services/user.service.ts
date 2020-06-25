@@ -40,4 +40,8 @@ export class UserService {
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
   }
+
+  getUserByUserName(userName: string) {
+    return this.http.get<User>(`${environment.apiUrl}/users/${userName}`)
+  }
 }

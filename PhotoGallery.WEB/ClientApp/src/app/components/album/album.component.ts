@@ -3,6 +3,9 @@ import { Album } from '../../models/album';
 import { AlbumService } from '../../services/album.service';
 import { first } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { User } from '../../models/user';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-album',
@@ -10,24 +13,37 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
   styleUrls: ['./album.component.css']
 })
 export class AlbumComponent implements OnInit {
+  isOwned: boolean;
+
+  currentUser: User;
+
   albums: Album[];
 
   crInfo: CreateAlbumInfo;
   upInfo: UpdateAlbumInfo;
 
-  constructor(private formBuilder: FormBuilder, private albumService: AlbumService)
-  {
+  constructor(
+    private activeRoute: ActivatedRoute,
+    private formBuilder: FormBuilder,
+    private albumService: AlbumService,
+    private userService: UserService) {
+
     this.crInfo = new CreateAlbumInfo(this.formBuilder);
     this.upInfo = new UpdateAlbumInfo(this.formBuilder);
   }
 
   ngOnInit(): void {
-    this.getAlbums();   
+    this.userService.currentUser.subscribe(user => this.currentUser = user);
+
+    this.activeRoute.params.subscribe(routeParams => {
+      this.getAlbums(routeParams.id);
+      this.isOwned = this.currentUser.id === +routeParams.id;
+    });
   }
 
-  getAlbums()
+  getAlbums(id: number)
   {
-    this.albumService.getAlbums()
+    this.albumService.getAlbums(id)
       .pipe(first())
       .subscribe(albums => { this.albums = albums; });
   }
@@ -50,9 +66,11 @@ export class AlbumComponent implements OnInit {
       .subscribe(
         album => {
           this.albums.push(album);
-          this.crInfo.success = "Created successfully";        
-          this.crInfo.loading = false;
+
+          this.crInfo.success = "Created successfully";  
           this.crInfo.form.markAsUntouched();
+
+          this.crInfo.loading = false;
         },
         err => {
           this.crInfo.error = "Unknown error! Please try again";
@@ -77,14 +95,15 @@ export class AlbumComponent implements OnInit {
       .pipe(first())
       .subscribe(
         () => {
-          let currentAlbum = this.albums.find(a => { return a.id === this.upInfo.f.id.value });
+          let currentAlbum = this.albums.find(a => a.id === this.upInfo.f.id.value);
 
           currentAlbum.name = this.upInfo.f.name.value;
           currentAlbum.description = this.upInfo.f.description.value;
 
-          this.upInfo.success = "Updated successfully";
-          this.upInfo.loading = false;
+          this.upInfo.success = "Updated successfully";         
           this.upInfo.form.markAsUntouched();
+
+          this.upInfo.loading = false;
         },
         err => {
           this.upInfo.error = "Unknown error! Please try again";
@@ -153,5 +172,4 @@ class UpdateAlbumInfo {
     });
     this.form.markAsUntouched();
   }
-
 }

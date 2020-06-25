@@ -5,7 +5,6 @@ import { environment } from '../../environments/environment';
 import { UserService } from './user.service';
 import { Album } from '../models/album';
 import { User } from '../models/user';
-import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

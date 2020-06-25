@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 
 import { Routes, RouterModule } from '@angular/router';
 
+import { AppComponent } from './app.component';
 import { AlbumComponent } from './components/album/album.component';
 import { PhotoComponent } from './components/photo/photo.component';
 import { UserRegisterComponent } from './components/user-register/user-register.component';
@@ -11,26 +12,27 @@ import { AuthGuard } from './helpers/auth.guard';
 
 const routes: Routes = [
   {
-    path: 'register',
+    path: 'users/register',
     component: UserRegisterComponent
   },
   {
-    path: 'login',
+    path: 'users/login',
     component: UserLoginComponent
   },
   {
-    path: 'albums',
+    path: 'users/:id/albums',
     component: AlbumComponent,
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     canActivate: [AuthGuard]
   },
   {
-    path: 'photos/:id',
+    path: 'albums/:id/photos',
     component: PhotoComponent,
     canActivate: [AuthGuard]
   },
   {
     path: '**',
-    redirectTo: 'albums',
+    component: AppComponent,
     canActivate: [AuthGuard]
   }
 ];
@@ -39,4 +41,6 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule
+{
+}

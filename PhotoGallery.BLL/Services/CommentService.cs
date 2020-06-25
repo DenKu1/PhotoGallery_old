@@ -15,38 +15,50 @@ namespace PhotoGallery.BLL.Services
         {
         }
 
-        public async Task<CommentDTO> AddCommentAsync(CommentAddDTO commentDTO, int userId)
+        public async Task<CommentDTO> AddCommentAsync(CommentAddDTO commentAddDTO, int userId)
         {
-            if (commentDTO == null)
+            if (commentAddDTO == null)
             {
                 throw null;
             }
 
-            var photo = await _unit.Photos.GetByIdAsync(commentDTO.PhotoId);
+            var photo = await _unit.Photos.GetByIdAsync(commentAddDTO.PhotoId);
 
             if (photo == null)
             {
                 throw new ValidationException("Photo was not found");
             }
 
-            Comment comment = _mp.Map<Comment>(commentDTO);
+            Comment comment = _mp.Map<Comment>(commentAddDTO);
+            
+            comment.UserId = userId;
 
             await _unit.Comments.AddAsync(comment);
             await _unit.SaveAsync();
 
-            return _mp.Map<CommentDTO>(comment);
+            var commentDTO = _mp.Map<CommentDTO>(comment);
+
+            var user = await _unit.UserManager.FindByIdAsync(comment.UserId.ToString());
+
+            commentDTO.UserName = user.UserName;
+
+            return commentDTO;
         }
 
         public async Task<CommentDTO> GetCommentAsync(int commentId)
         {
-            var comment = await _unit.Photos.GetByIdAsync(commentId);
+            var comment = await _unit.Comments.GetByIdAsync(commentId);
 
             if (comment == null)
             {
                 throw new ValidationException("Comment was not found");
             }
 
-            return _mp.Map<CommentDTO>(comment);
+            var commentDTO = _mp.Map<CommentDTO>(comment);
+
+            commentDTO.UserName = comment.User.UserName;
+
+            return commentDTO;
         }
 
         public async Task<IEnumerable<CommentDTO>> GetCommentsAsync(int photoId)
@@ -60,7 +72,18 @@ namespace PhotoGallery.BLL.Services
 
             var comments = photo.Comments;
 
-            return _mp.Map<IEnumerable<CommentDTO>>(comments);
+            var commentDTOs = new List<CommentDTO>();
+
+            foreach (var comment in comments)
+            {
+                var commentDTO = _mp.Map<CommentDTO>(comment);
+
+                commentDTO.UserName = comment.User.UserName;
+
+                commentDTOs.Add(commentDTO);
+            }
+
+            return commentDTOs;
         }
 
         public async Task RemoveCommentAsync(int commentId, int userId)

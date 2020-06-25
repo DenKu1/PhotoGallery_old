@@ -5,6 +5,7 @@ using PhotoGallery.BLL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace PhotoGallery.WEB.Controllers
@@ -15,7 +16,7 @@ namespace PhotoGallery.WEB.Controllers
     {
         private readonly IPhotoService _photoService;
 
-        private int UserId => int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
+        private int UserId => int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
         public PhotoController(IPhotoService photoService)
         {
@@ -24,13 +25,14 @@ namespace PhotoGallery.WEB.Controllers
 
         [HttpGet]
         [Route("api/albums/{id}/photos")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<IEnumerable<PhotoDTO>>> GetPhotos(int id)
         {
             IEnumerable<PhotoDTO> photoDTOs;           
 
             try
             {
-                photoDTOs = await _photoService.GetPhotosAsync(id);
+                photoDTOs = await _photoService.GetPhotosAsync(id, UserId);
             }
             catch (Exception e)
             {
@@ -42,13 +44,14 @@ namespace PhotoGallery.WEB.Controllers
 
         [HttpGet]
         [Route("api/photos/{id}")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<PhotoDTO>> GetPhoto(int id)
         {
             PhotoDTO photoDTO;
 
             try
             {
-                photoDTO = await _photoService.GetPhotoAsync(id);
+                photoDTO = await _photoService.GetPhotoAsync(id, UserId);
             }
             catch (Exception e)
             {
@@ -60,6 +63,7 @@ namespace PhotoGallery.WEB.Controllers
 
         [HttpPost]
         [Route("api/albums/{id}/photos")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult> PostPhoto(int id, [FromBody] PhotoAddDTO photoAddDTO)
         {
             if (!ModelState.IsValid)
@@ -88,6 +92,7 @@ namespace PhotoGallery.WEB.Controllers
 
         [HttpPost]
         [Route("api/photos/{id}/like")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult> LikePhoto(int id)
         {
             try
@@ -104,6 +109,7 @@ namespace PhotoGallery.WEB.Controllers
 
         [HttpPut]
         [Route("api/photos/{id}")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult> PutPhoto(int id, [FromBody] PhotoUpdateDTO photoUpdateDTO)
         {
             if (!ModelState.IsValid)
@@ -130,6 +136,7 @@ namespace PhotoGallery.WEB.Controllers
 
         [HttpDelete]
         [Route("api/photos/{id}")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult> DeletePhoto(int id)
         {
             try

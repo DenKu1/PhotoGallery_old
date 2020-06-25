@@ -14,7 +14,7 @@ namespace PhotoGallery.BLL.Configs
             CreateMap<Comment, CommentDTO>();
             CreateMap<CommentAddDTO, Comment>();
 
-            CreateMap<Photo, PhotoDTO>();
+            CreateMap<Photo, PhotoDTO>().ForMember(p => p.Likes, opt => opt.Ignore());
             CreateMap<PhotoAddDTO, Photo>();
 
             CreateMap<User, UserDTO>();

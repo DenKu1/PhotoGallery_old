@@ -39,9 +39,9 @@ namespace PhotoGallery.DAL.Repositories
             return await _context.Set<TEntity>().ToListAsync();
         }
 
-        public ValueTask<TEntity> GetByIdAsync(int id)
+        public async ValueTask<TEntity> GetByIdAsync(int id)
         {
-            return _context.Set<TEntity>().FindAsync(id);
+            return await _context.Set<TEntity>().FindAsync(id);
         }
 
         public void Remove(TEntity entity)
@@ -59,9 +59,9 @@ namespace PhotoGallery.DAL.Repositories
             _context.Entry(entity).State = EntityState.Modified;
         }
 
-        public Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> expression)
+        public async Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> expression)
         {
-            return _context.Set<TEntity>().SingleOrDefaultAsync(expression);
+            return await _context.Set<TEntity>().SingleOrDefaultAsync(expression);
         }
     }
 }

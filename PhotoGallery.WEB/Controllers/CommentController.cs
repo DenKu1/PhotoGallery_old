@@ -5,6 +5,7 @@ using PhotoGallery.BLL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace PhotoGallery.WEB.Controllers
@@ -15,7 +16,7 @@ namespace PhotoGallery.WEB.Controllers
     {
         private readonly ICommentService _commentService;
 
-        private int UserId => int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
+        private int UserId => int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
         public CommentController(ICommentService commentService)
         {
@@ -24,6 +25,7 @@ namespace PhotoGallery.WEB.Controllers
 
         [HttpGet]
         [Route("api/photos/{id}/comments")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<IEnumerable<CommentDTO>>> GetComments(int id)
         {
             IEnumerable<CommentDTO> commentDTOs;
@@ -42,6 +44,7 @@ namespace PhotoGallery.WEB.Controllers
 
         [HttpGet]
         [Route("api/comments/{id}")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<CommentDTO>> GetComment(int id)
         {
             CommentDTO commentDTO;
@@ -60,6 +63,7 @@ namespace PhotoGallery.WEB.Controllers
 
         [HttpPost]
         [Route("api/photos/{id}/comments")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<CommentDTO>> PostComment(int id, [FromBody] CommentAddDTO commentAddDTO)
         {
             if (!ModelState.IsValid)
@@ -88,6 +92,7 @@ namespace PhotoGallery.WEB.Controllers
 
         [HttpDelete]
         [Route("api/comments/{id}")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult> DeleteComment(int id)
         {
             try

@@ -4,7 +4,6 @@ using PhotoGallery.BLL.DTO;
 using PhotoGallery.BLL.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace PhotoGallery.WEB.Controllers
@@ -28,11 +27,35 @@ namespace PhotoGallery.WEB.Controllers
             var users = await _userService.GetUsersAsync();
             return Ok(users);
         }
-                
+
+        [HttpGet]
+        [Route("api/users/{username}")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<UserDTO>> GetUserByUserName(string userName)
+        {
+            if (userName == null)
+            {
+                return BadRequest();
+            }
+
+            UserDTO userDTO;
+
+            try
+            {
+                userDTO = await _userService.GetUserByUserNameAsync(userName);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            return Ok(userDTO);
+        }
+
         [HttpPost]
         [Route("api/register")]
         [AllowAnonymous]
-        public async Task<ActionResult<UserDTO>> RegisterUser([FromBody] UserRegisterDTO userRegisterDTO) //[FromBody]
+        public async Task<ActionResult<UserDTO>> RegisterUser([FromBody] UserRegisterDTO userRegisterDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -50,11 +73,11 @@ namespace PhotoGallery.WEB.Controllers
 
             return Ok();
         }
-
-        [Route("api/login")]
+                
         [HttpPost]
+        [Route("api/login")]
         [AllowAnonymous]
-        public async Task<ActionResult> Login([FromBody] UserLoginDTO userLoginDTO) //[FromBody]
+        public async Task<ActionResult> Login([FromBody] UserLoginDTO userLoginDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -81,59 +104,14 @@ namespace PhotoGallery.WEB.Controllers
             });
         }
 
-        //TODO: exceptions!
         [HttpDelete]
         [Route("api/users/{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UserDTO>> DeleteUser(int id)
         {
-            await _userService.DeleteUserAsync(id);
-            return Ok();
-        }
-
-
-
-
-        /*
-        [HttpGet("Profile")]
-        public async Task<ActionResult<UserDTO>> GetProfile()
-        {
-            string id = User.Claims.First(c => c.Type == "UserId").Value;
-
-            var user = await _userService.GetUserProfileAsync(id);
-
-            if (user == null)
-            {
-                return BadRequest();
-            }
-
-            return Ok(user);
-        }
-        */
-
-
-
-        /*
-        [Authorize]
-        [HttpPut("{id}")]
-        public async Task<ActionResult<UserDTO>> UpdateProfile([FromBody] UserDTO user, int id)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if (user.Id != id)
-            {
-                return BadRequest();
-            }
-
-            if (_userService.GetUserProfileAsync(id.ToString()) == null)
-            {
-                return NotFound();
-            }
-
             try
             {
-                await _userService.UpdateProfile(user);
+                await _userService.DeleteUserAsync(id);
             }
             catch (Exception e)
             {
@@ -141,6 +119,6 @@ namespace PhotoGallery.WEB.Controllers
             }
 
             return Ok();
-        }*/
+        }
     }
 }
