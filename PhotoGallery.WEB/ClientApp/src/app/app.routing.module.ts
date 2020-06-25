@@ -2,15 +2,20 @@ import { NgModule } from '@angular/core';
 
 import { Routes, RouterModule } from '@angular/router';
 
-import { AppComponent } from './app.component';
 import { AlbumComponent } from './components/album/album.component';
 import { PhotoComponent } from './components/photo/photo.component';
 import { UserRegisterComponent } from './components/user-register/user-register.component';
 import { UserLoginComponent } from './components/user-login/user-login.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
+import { HomeComponent } from './components/home/home.component';
 
 import { AuthGuard } from './helpers/auth.guard';
 
 const routes: Routes = [
+  {
+    path: '',
+    component: HomeComponent
+  },
   {
     path: 'users/register',
     component: UserRegisterComponent
@@ -32,8 +37,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    component: AppComponent,
-    canActivate: [AuthGuard]
+    component: NotFoundComponent
   }
 ];
 

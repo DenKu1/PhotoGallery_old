@@ -14,6 +14,8 @@ import { AlbumComponent } from './components/album/album.component';
 import { PhotoComponent } from './components/photo/photo.component';
 import { UserRegisterComponent } from './components/user-register/user-register.component';
 import { UserLoginComponent } from './components/user-login/user-login.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
+import { HomeComponent } from './components/home/home.component';
 
 
 @NgModule({
@@ -23,7 +25,9 @@ import { UserLoginComponent } from './components/user-login/user-login.component
     AlbumComponent,
     PhotoComponent,
     UserRegisterComponent,
-    UserLoginComponent
+    UserLoginComponent,
+    NotFoundComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

@@ -14,7 +14,7 @@
         <a *ngIf="!currentUser" class="nav-link disabled">My albums</a>
       </li>
       <li class="form-inline">
-        <input [formControl]="userName" type="text" class="form-control" style="width:150px;" placeholder="Search">
+        <input [formControl]="userName" type="text" class="form-control" style="width:170px;" placeholder="Search user albums">
         <button (click)="findUser()" class="btn btn-secondary btn-sm py-2 mr-1">Ok</button>
         <span *ngIf="error" class="text-danger">{{error}}</span>
         <span *ngIf="submitted && userName.errors" class="text-danger">

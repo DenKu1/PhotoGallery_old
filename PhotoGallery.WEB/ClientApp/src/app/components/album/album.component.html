@@ -11,6 +11,16 @@
     </div>
     <div class="col-md-8 my-main-section">
       <div class="container">
+        <div *ngIf="album" class="card my-3">
+          <div class="card-body">
+            <h3>You opened album: {{album.name}}</h3>
+            <p *ngIf="album.description">{{album.description}}</p>
+            <a [routerLink]="['/users', currentUser.id, 'albums']" class="btn btn-info px-5">Return</a>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="container">
         <!--Get albums-->
         <div *ngIf="!albums || albums.length == 0" class="alert alert-info text-center mt-4">
           <h4 *ngIf="isOwned">You haven`t added albums yet</h4>
