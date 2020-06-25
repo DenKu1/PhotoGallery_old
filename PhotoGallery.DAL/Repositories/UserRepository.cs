@@ -21,6 +21,11 @@ namespace PhotoGallery.DAL.Repositories
             return await _context.Users.ToListAsync();
         }
 
+        public async Task<User> GetByIdAsync(int id)
+        {
+            return await _context.Users.FindAsync(id);
+        }
+
         public async Task<User> GetByUserNameAsync(string userName)
         {
             return await _context.Users.SingleOrDefaultAsync(u => u.UserName == userName);

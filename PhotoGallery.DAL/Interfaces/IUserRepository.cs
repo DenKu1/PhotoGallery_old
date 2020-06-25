@@ -9,5 +9,7 @@ namespace PhotoGallery.DAL.Interfaces
         Task<IEnumerable<User>> GetAll();
 
         Task<User> GetByUserNameAsync(string userName);
+
+        Task<User> GetByIdAsync(int id);
     }
 }

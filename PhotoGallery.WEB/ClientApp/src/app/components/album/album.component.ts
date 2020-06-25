@@ -16,6 +16,7 @@ export class AlbumComponent implements OnInit {
   isOwned: boolean;
 
   currentUser: User;
+  albumOwner: User;
 
   albums: Album[];
 
@@ -38,6 +39,9 @@ export class AlbumComponent implements OnInit {
     this.activeRoute.params.subscribe(routeParams => {
       this.getAlbums(routeParams.id);
       this.isOwned = this.currentUser.id === +routeParams.id;
+
+      this.userService.getUserById(+routeParams.id).subscribe(
+        user => { this.albumOwner = user; })
     });
   }
 

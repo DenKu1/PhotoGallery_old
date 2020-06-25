@@ -11,11 +11,10 @@
     </div>
     <div class="col-md-8 my-main-section">
       <div class="container">
-        <div *ngIf="album" class="card my-3">
+        <div *ngIf="albumOwner" class="card my-3">
           <div class="card-body">
-            <h3>You opened album: {{album.name}}</h3>
-            <p *ngIf="album.description">{{album.description}}</p>
-            <a [routerLink]="['/users', currentUser.id, 'albums']" class="btn btn-info px-5">Return</a>
+            <h3 *ngIf="isOwned">You watching your albums:</h3>
+            <h3 *ngIf="!isOwned">You watching {{albumOwner.userName}}`s albums:</h3>
           </div>
         </div>
       </div>

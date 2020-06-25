@@ -9,6 +9,7 @@ namespace PhotoGallery.BLL.Interfaces
         Task<IEnumerable<UserDTO>> GetUsersAsync();
         Task CreateUserAsync(UserRegisterDTO data);
         Task<(string, UserDTO)> LoginAsync(UserLoginDTO data);
+        Task<UserDTO> GetUserAsync(int id);
         Task<UserDTO> GetUserByUserNameAsync(string userName);
         Task DeleteUserAsync(int id);
     }

@@ -41,7 +41,11 @@ export class UserService {
     this.currentUserSubject.next(null);
   }
 
+  getUserById(id: number) {
+    return this.http.get<User>(`${environment.apiUrl}/users/${id}`)
+  }
+
   getUserByUserName(userName: string) {
-    return this.http.get<User>(`${environment.apiUrl}/users/${userName}`)
+    return this.http.get<User>(`${environment.apiUrl}/users/by-user-name/${userName}`)
   }
 }

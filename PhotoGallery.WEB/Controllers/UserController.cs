@@ -29,7 +29,26 @@ namespace PhotoGallery.WEB.Controllers
         }
 
         [HttpGet]
-        [Route("api/users/{username}")]
+        [Route("api/users/{id}")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<UserDTO>> GetUser(int id)
+        {
+            UserDTO userDTO;
+
+            try
+            {
+                userDTO = await _userService.GetUserAsync(id);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            return Ok(userDTO);
+        }
+
+        [HttpGet]
+        [Route("api/users/by-user-name/{username}")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult<UserDTO>> GetUserByUserName(string userName)
         {

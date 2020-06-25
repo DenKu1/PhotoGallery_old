@@ -32,6 +32,20 @@ namespace PhotoGallery.BLL.Services
             return _mp.Map<IEnumerable<UserDTO>>(users);
         }
 
+        public async Task<UserDTO> GetUserAsync(int id)
+        {
+            var user = await _unit.Users.GetByIdAsync(id);
+
+            if (user == null)
+            {
+                throw new ValidationException("User was not found");
+            }
+
+            var userDTO = _mp.Map<UserDTO>(user);
+
+            return userDTO;
+        }
+
         public async Task<UserDTO> GetUserByUserNameAsync(string userName)
         {
             if (userName == null)
