@@ -25,7 +25,7 @@
           <h4 *ngIf="isOwned">You haven`t added albums yet</h4>
           <h4 *ngIf="!isOwned">User hasn`t added albums yet</h4>
         </div>
-        <div *ngIf="albums">
+        <div *ngIf="albums && albums.length != 0">
           <div *ngFor="let album of albums;let i = index">
             <div class="card my-3">
               <div class="card-body">

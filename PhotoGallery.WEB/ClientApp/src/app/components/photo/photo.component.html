@@ -25,12 +25,16 @@
         <div *ngIf="!photos || photos.length == 0" class="alert alert-info text-center mt-4">
           <h4>Album is empty</h4>
         </div>
-        <div *ngIf="photos">
+        <div *ngIf="photos && photos.length != 0">
+          <div class="d-flex justify-content-end">
+            <input type="text" class="form-control" style="width:150px;" placeholder="Search photo">
+            <button class="btn btn-secondary btn-sm py-2 mr-1">Ok</button>
+          </div>
           <div *ngFor="let photo of photos;let i = index">
             <div class="card bg-light my-3">
               <div class="card-header bg-light">
                 <button *ngIf="isOwned" (click)="deletePhoto(photo.id, i)" class="close my-close">x</button>
-                <h3 class="d-inline-block" >{{photo.name}}</h3>
+                <h3 class="d-inline-block">{{photo.name}}</h3>
                 <!--Button to open photo update modal-->
                 <button *ngIf="isOwned" type="button" class="form__button" (click)="upInfo.initialize(photo)" data-toggle="modal" data-target="#updatePhotoModal"><i class="fas fa-edit"></i></button>
                 <p class="font-weight-light">{{photo.created | date}}</p>
@@ -45,7 +49,7 @@
                   </button>
                   <button class="my-photo-at" (click)="getComments(photo)">
                     <i *ngIf="photo.comments" class="fas fa-comment"></i>
-                    <i *ngIf="!photo.comments" class="far fa-comment"></i>                    
+                    <i *ngIf="!photo.comments" class="far fa-comment"></i>
                   </button>
                 </div>
               </div>
@@ -72,7 +76,7 @@
                     <span *ngIf="crCommentInfos[i].f.text.errors.required"><small>Text is required</small></span>
                     <span *ngIf="crCommentInfos[i].f.text.errors.maxlength"><small>Max length is 200 symbols</small></span>
                   </div>
-                </form>            
+                </form>
               </div>
             </div>
           </div>
