@@ -28,12 +28,14 @@ const routes: Routes = [
     path: 'users/:id/albums',
     component: AlbumComponent,
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: { roles: ["user"] }
   },
   {
     path: 'albums/:id/photos',
     component: PhotoComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: { roles: ["user"] }
   },
   {
     path: '**',

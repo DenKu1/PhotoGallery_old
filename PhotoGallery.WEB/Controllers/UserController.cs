@@ -4,6 +4,7 @@ using PhotoGallery.BLL.DTO;
 using PhotoGallery.BLL.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PhotoGallery.WEB.Controllers
@@ -74,7 +75,7 @@ namespace PhotoGallery.WEB.Controllers
         [HttpPost]
         [Route("api/register")]
         [AllowAnonymous]
-        public async Task<ActionResult<UserDTO>> RegisterUser([FromBody] UserRegisterDTO userRegisterDTO)
+        public async Task<ActionResult> RegisterUser([FromBody] UserRegisterDTO userRegisterDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -119,6 +120,7 @@ namespace PhotoGallery.WEB.Controllers
                 id = loginData.Item2.Id,
                 userName = loginData.Item2.UserName,
                 email = loginData.Item2.Email,
+                roles = loginData.Item2.Roles.Select(role => role.ToLower()),
                 token = loginData.Item1
             });
         }

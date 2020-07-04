@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using AutoMapper;
 using PhotoGallery.BLL.Configs;
 using PhotoGallery.BLL.DTO;
 using PhotoGallery.BLL.Exceptions;
 using PhotoGallery.BLL.Interfaces;
 using PhotoGallery.DAL.Entities;
 using PhotoGallery.DAL.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace PhotoGallery.BLL.Services
 {
@@ -29,19 +29,22 @@ namespace PhotoGallery.BLL.Services
         public async Task<IEnumerable<UserDTO>> GetUsersAsync()
         {
             var users = await _unit.Users.GetAll();
-            return _mp.Map<IEnumerable<UserDTO>>(users);
+
+            List<UserDTO> userDTOs = users.Select(user => MapUserToDTO(user)).ToList();
+
+            return userDTOs;
         }
 
         public async Task<UserDTO> GetUserAsync(int id)
         {
-            var user = await _unit.Users.GetByIdAsync(id);
+            User user = await _unit.Users.GetByIdAsync(id);
 
             if (user == null)
             {
                 throw new ValidationException("User was not found");
             }
 
-            var userDTO = _mp.Map<UserDTO>(user);
+            UserDTO userDTO = MapUserToDTO(user);
 
             return userDTO;
         }
@@ -53,15 +56,15 @@ namespace PhotoGallery.BLL.Services
                 throw null;
             }
 
-            var user = await _unit.Users.GetByUserNameAsync(userName);
+            User user = await _unit.Users.GetByUserNameAsync(userName);
 
             if (user == null)
             {
                 throw new ValidationException("User was not found");
             }
 
-            var userDTO = _mp.Map<UserDTO>(user);
-          
+            UserDTO userDTO = MapUserToDTO(user);
+
             return userDTO;
         }
 
@@ -82,7 +85,7 @@ namespace PhotoGallery.BLL.Services
                 throw new ValidationException("User with this username already exists");
             }
 
-            var user = new User
+            User user = new User
             {
                 UserName = data.UserName,
                 Email = data.Email
@@ -94,21 +97,21 @@ namespace PhotoGallery.BLL.Services
 
         public async Task<(string, UserDTO)> LoginAsync(UserLoginDTO data)
         {
-            var user = await _unit.UserManager.FindByNameAsync(data.UserName);
+            User user = await _unit.UserManager.FindByNameAsync(data.UserName);
 
             if (user == null || !await _unit.UserManager.CheckPasswordAsync(user, data.Password))
             {
                 throw new ValidationException("Incorrect username or password");
             }
 
-            var roles = await _unit.UserManager.GetRolesAsync(user);
+            UserDTO userDTO = MapUserToDTO(user);
 
-            return (GenerateJwtToken(user, roles), _mp.Map<UserDTO>(user));
+            return (GenerateJwtToken(userDTO), userDTO);
         }       
 
         public async Task DeleteUserAsync(int id)
         {
-            var user = await _unit.UserManager.FindByIdAsync(id.ToString());
+            User user = await _unit.UserManager.FindByIdAsync(id.ToString());
 
             if (user == null)
             {
@@ -118,14 +121,14 @@ namespace PhotoGallery.BLL.Services
             await _unit.UserManager.DeleteAsync(user);
         }
 
-        private string GenerateJwtToken(User user, IList<string> roles)
+        private string GenerateJwtToken(UserDTO userDTO)
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier, userDTO.Id.ToString())
             };
 
-            claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+            claims.AddRange(userDTO.Roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
             DateTime expires = DateTime.UtcNow.Add(_jwtSettings.LifeTime);
 
@@ -141,6 +144,17 @@ namespace PhotoGallery.BLL.Services
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private UserDTO MapUserToDTO(User user)
+        {
+            var userDTO = _mp.Map<UserDTO>(user);
+
+            var roles = _unit.UserManager.GetRolesAsync(user).Result;
+
+            userDTO.Roles = roles.ToArray();
+
+            return userDTO;
         }
     }
 }
