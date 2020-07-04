@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Album } from '../../models/album';
 import { Photo } from '../../models/photo';
-import { Comment } from '../../models/comment';
 import { User } from '../../models/user';
 import { AlbumService } from '../../services/album.service';
 import { PhotoService } from '../../services/photo.service';
@@ -30,6 +29,10 @@ export class PhotoComponent implements OnInit {
 
   crCommentInfos: CreateCommentInfo[];
 
+  searchPhotoForm: FormControl;
+
+  hideme: any = {};
+
   constructor(
     private activeRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -38,16 +41,24 @@ export class PhotoComponent implements OnInit {
     private commentService: CommentService,
     private userService: UserService) {
 
+    this.activeRoute.params.subscribe(routeParams => this.albumId = routeParams.id);
+
+    this.searchPhotoForm = new FormControl('', [Validators.maxLength(50)])
+
     this.crInfo = new CreatePhotoInfo(this.formBuilder, this.albumId);
     this.upInfo = new UpdatePhotoInfo(this.formBuilder);
   }
 
   ngOnInit(): void {
-    this.userService.currentUser.subscribe(user => this.currentUser = user);
-    this.activeRoute.params.subscribe(routeParams => this.albumId = routeParams.id);
-
+    
+    
+    this.getCurrentUser();
     this.getAlbum();
     this.getPhotos();
+  }
+
+  getCurrentUser(): void {
+      this.userService.currentUser.subscribe(user => this.currentUser = user);
   }
 
   getAlbum(): void {
@@ -82,7 +93,7 @@ export class PhotoComponent implements OnInit {
 
     this.crInfo.loading = true;
     this.photoService.createPhoto(
-      this.crInfo.f.albumId.value,
+      +this.crInfo.f.albumId.value,
       this.crInfo.f.name.value,
       this.crInfo.f.path.value)
       .pipe(first())
@@ -164,6 +175,25 @@ export class PhotoComponent implements OnInit {
         err => {
           console.log("Can`t like photo! Unknown error");
         });
+  }
+
+  searchPhoto() {
+
+    if (this.searchPhotoForm.invalid) {
+      return;
+    }
+
+    let searchString: string = this.searchPhotoForm.value;
+
+    if (searchString === '') {
+      this.hideme = {};
+      return;
+    }
+
+    this.photos.forEach(
+      photo => photo.name.toLowerCase().includes(searchString.toLowerCase())
+        ? this.hideme[photo.id] = false
+        : this.hideme[photo.id] = true);
   }
 
   isCommentOwned(commentUserId: number): boolean

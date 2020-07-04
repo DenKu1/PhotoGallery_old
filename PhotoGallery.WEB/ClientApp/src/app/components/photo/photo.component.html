@@ -27,11 +27,11 @@
         </div>
         <div *ngIf="photos && photos.length != 0">
           <div class="d-flex justify-content-end">
-            <input type="text" class="form-control" style="width:150px;" placeholder="Search photo">
-            <button class="btn btn-secondary btn-sm py-2 mr-1">Ok</button>
+            <input [formControl]="searchPhotoForm" type="text" class="form-control" style="width:150px;" placeholder="Search photo">
+            <button (click)="searchPhoto()" class="btn btn-secondary btn-sm py-2 mr-1">Ok</button>
           </div>
           <div *ngFor="let photo of photos;let i = index">
-            <div class="card bg-light my-3">
+            <div [hidden]="hideme[photo.id]" class="card bg-light my-3">
               <div class="card-header bg-light">
                 <button *ngIf="isOwned" (click)="deletePhoto(photo.id, i)" class="close my-close">x</button>
                 <h3 class="d-inline-block">{{photo.name}}</h3>
@@ -66,8 +66,8 @@
                 <!--Add comment-->
                 <form [formGroup]="crCommentInfos[i].form" (submit)="createComment(photo, i)">
                   <div class="form__group field d-flex">
-                    <input type="text" class="form__field" formControlName="text" id="crText">
-                    <label class="form__label" for="crText">Add comment</label>
+                    <input type="text" class="form__field" formControlName="text" id={{photo.id}}>
+                    <label class="form__label" for={{photo.id}}>Add comment</label>
                     <button type="submit" [disabled]="loading" class="form__button">
                       <span *ngIf="crCommentInfos[i].loading" class="spinner-border spinner-border-sm mr-1"></span>Post
                     </button>
