@@ -118,6 +118,14 @@ namespace PhotoGallery.BLL.Services
                 throw new ValidationException("User was not found");
             }
 
+            // Delete user`s likes before deleting user account
+            IEnumerable<Like> userLikes = await _unit.Likes.Find(like => like.UserId == id);
+            _unit.Likes.RemoveRange(userLikes);
+
+            // Delete user`s comments before deleting user account
+            IEnumerable<Comment> userComments = await _unit.Comments.Find(comment => comment.UserId == id);
+            _unit.Comments.RemoveRange(userComments);
+
             await _unit.UserManager.DeleteAsync(user);
         }
 
