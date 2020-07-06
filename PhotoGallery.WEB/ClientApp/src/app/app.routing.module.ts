@@ -10,6 +10,7 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import { HomeComponent } from './components/home/home.component';
 
 import { AuthGuard } from './helpers/auth.guard';
+import { UserManagerComponent } from './components/user-manager/user-manager.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,12 @@ const routes: Routes = [
     component: PhotoComponent,
     canActivate: [AuthGuard],
     data: { roles: ["user"] }
+  },
+  {
+    path: 'admin',
+    component: UserManagerComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ["admin"] }
   },
   {
     path: '**',

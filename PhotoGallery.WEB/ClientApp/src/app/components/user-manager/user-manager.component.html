@@ -1,0 +1,23 @@
+<div class="container">
+  <table *ngIf="users && users.length" class="table table-light table-hover">
+    <thead>
+      <tr class="thead-light">
+        <th>Id</th>
+        <th>UserName</th>
+        <th>Email</th>
+        <th>Roles</th>
+        <th>Link</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users;let i = index">
+        <td>{{user.id}}</td>
+        <td><a [routerLink]="['/users', user.id, 'albums']">{{user.userName}}</a></td>
+        <td>{{user.email}}</td>
+        <td><span *ngFor="let role of user.roles">{{role}}<br></span></td>
+        <td><button type="button" (click)="deleteUser(user.id, i)" class="btn btn-link" style="padding: 0;">Delete</button></td>
+        </tr>
+    </tbody>
+  </table>
+</div>

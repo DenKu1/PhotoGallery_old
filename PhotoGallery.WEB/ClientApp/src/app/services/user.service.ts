@@ -41,11 +41,19 @@ export class UserService {
     this.currentUserSubject.next(null);
   }
 
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${environment.apiUrl}/users/`);
+  }
+
   getUserById(id: number) {
-    return this.http.get<User>(`${environment.apiUrl}/users/${id}`)
+    return this.http.get<User>(`${environment.apiUrl}/users/${id}`);
   }
 
   getUserByUserName(userName: string) {
-    return this.http.get<User>(`${environment.apiUrl}/users/by-user-name/${userName}`)
+    return this.http.get<User>(`${environment.apiUrl}/users/by-user-name/${userName}`);
+  }
+
+  deleteUser(id: number) {
+    return this.http.delete(`${environment.apiUrl}/users/${id}`);
   }
 }
