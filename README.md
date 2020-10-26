@@ -19,4 +19,7 @@ Frontend part:
 + Bootstrap 4
 + Awesome icons
 
+UML diagrams:
++ Use-case diagram (https://drive.google.com/file/d/1xPgLqRZ9-5h3ohYoBszr4hFVVpHWG0wp/view?usp=sharing)
+
 Created by DenKu1 (https://github.com/DenKu1)
