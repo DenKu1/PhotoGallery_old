@@ -1,9 +1,7 @@
 ﻿namespace PhotoGallery.DAL.Entities
 {
-    public class Like
+    public class Like : BaseEntity<int>
     {
-        public int Id { get; set; }
-
         public int PhotoId { get; set; }
         public virtual Photo Photo { get; set; }
 

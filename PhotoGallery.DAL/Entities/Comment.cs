@@ -1,9 +1,7 @@
 ﻿namespace PhotoGallery.DAL.Entities
 {
-    public class Comment
+    public class Comment : BaseEntity<int>
     {
-        public int Id { get; set; }
-
         public string Text { get; set; }
 
         public int PhotoId { get; set; }

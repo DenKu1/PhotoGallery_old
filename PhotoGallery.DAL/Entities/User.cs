@@ -5,7 +5,7 @@ namespace PhotoGallery.DAL.Entities
 {
     public class User : IdentityUser<int>
     {
-        public override int Id { get; set; }
+        //public override int Id { get; set; }
 
         public virtual ICollection<Album> Albums { get; set; }
 

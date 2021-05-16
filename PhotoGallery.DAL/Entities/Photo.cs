@@ -4,10 +4,8 @@ using System.Collections.ObjectModel;
 
 namespace PhotoGallery.DAL.Entities
 {
-    public class Photo
+    public class Photo : BaseEntity<int>
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
         public string Path { get; set; }
 
