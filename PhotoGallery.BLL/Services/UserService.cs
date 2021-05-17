@@ -39,7 +39,8 @@ namespace PhotoGallery.BLL.Services
         {
             var users = await unitOfWork.Users.GetAll();
 
-            return mapper.Map<IEnumerable<UserDTO>>(users);
+            return users.Select(u => mapper.Map<UserDTO>(u, opt =>
+                opt.Items["roles"] = unitOfWork.UserManager.GetRolesAsync(u).Result.ToArray()));
         }
 
         public async Task<UserDTO> GetUserAsync(int id)
@@ -48,10 +49,12 @@ namespace PhotoGallery.BLL.Services
 
             if (user == null)
             {
-                throw new ValidationException("User was not found");
+                throw new PhotoGalleryNotFoundException("User was not found");
             }
 
-            return mapper.Map<UserDTO>(user);
+            var roles = unitOfWork.UserManager.GetRolesAsync(user).Result.ToArray();
+
+            return mapper.Map<UserDTO>(user, opt => opt.Items["roles"] = roles);
         }
 
         public async Task<UserDTO> GetUserByUserNameAsync(string userName)
@@ -60,22 +63,24 @@ namespace PhotoGallery.BLL.Services
 
             if (user == null)
             {
-                throw new ValidationException("User was not found");
+                throw new PhotoGalleryNotFoundException("User was not found");
             }
 
-            return mapper.Map<UserDTO>(user);
+            var roles = unitOfWork.UserManager.GetRolesAsync(user).Result.ToArray();
+
+            return mapper.Map<UserDTO>(user, opt => opt.Items["roles"] = roles);
         }
 
         public async Task CreateUserAsync(UserRegisterDTO userRegisterDTO)
         {
             if (await unitOfWork.UserManager.FindByEmailAsync(userRegisterDTO.Email) != null)
             {
-                throw new ValidationException("User with this email already exists");
+                throw new PhotoGalleryFailedRegisterException("User with this email already exists");
             }
 
             if (await unitOfWork.UserManager.FindByNameAsync(userRegisterDTO.UserName) != null)
             {
-                throw new ValidationException("User with this username already exists");
+                throw new PhotoGalleryFailedRegisterException("User with this username already exists");
             }
 
             User user = new User
@@ -86,9 +91,6 @@ namespace PhotoGallery.BLL.Services
 
             await unitOfWork.UserManager.CreateAsync(user, userRegisterDTO.Password);
             await unitOfWork.UserManager.AddToRoleAsync(user, "User");
-
-
-            //TODO: Investigate where save changes????
         }
 
         public async Task<UserWithTokenDTO> LoginAsync(UserLoginDTO userLoginDTO)
@@ -97,12 +99,13 @@ namespace PhotoGallery.BLL.Services
 
             if (user == null || !await unitOfWork.UserManager.CheckPasswordAsync(user, userLoginDTO.Password))
             {
-                throw new ValidationException("Incorrect username or password");
+                throw new PhotoGalleryFailedLoginException("Incorrect username or password");
             }
 
             var token = GenerateJwtToken(user);
+            var roles = unitOfWork.UserManager.GetRolesAsync(user).Result.ToArray();
 
-            return mapper.Map<UserWithTokenDTO>(user, opt => opt.Items["token"] = token);
+            return mapper.Map<UserWithTokenDTO>(user, opt => { opt.Items["roles"] = roles; opt.Items["token"] = token; });
         }       
 
         public async Task RemoveUserAsync(int userId)
@@ -111,10 +114,8 @@ namespace PhotoGallery.BLL.Services
 
             if (user == null)
             {
-                throw new ValidationException("User was not found");
+                throw new PhotoGalleryNotFoundException("User was not found");
             }
-
-            //TODO: Investigate why we need this
 
             // Delete user`s likes before deleting user account
             IEnumerable<Like> userLikes = await unitOfWork.Likes.Find(like => like.UserId == userId);
@@ -128,8 +129,8 @@ namespace PhotoGallery.BLL.Services
         }
 
         private string GenerateJwtToken(User user)
-        {
-            var claims = user.Roles.Select(r => new Claim(ClaimTypes.Role, r.Name)).ToList();
+        {       
+            var claims = unitOfWork.UserManager.GetRolesAsync(user).Result.Select(r => new Claim(ClaimTypes.Role, r)).ToList();
             claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
 
             DateTime expires = DateTime.UtcNow.Add(jwtSettings.LifeTime);
@@ -147,18 +148,5 @@ namespace PhotoGallery.BLL.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-/*        private UserDTO MapUserToDTO(User user)
-        {
-            //TODO: Remove this somehow
-
-            var userDTO = mapper.Map<UserDTO>(user);
-
-            var roles = unitOfWork.UserManager.GetRolesAsync(user).Result;
-
-            userDTO.Roles = roles.ToArray();
-
-            return userDTO;
-        }*/
     }
 }

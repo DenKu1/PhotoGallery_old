@@ -32,10 +32,10 @@ namespace PhotoGallery.BLL.Configuration.Automapper
                     photo.Likes.Any(like => like.UserId == (int)context.Items["userId"])));
             
             CreateMap<User, UserDTO>()
-                .ForMember(x => x.Roles, opt => opt.MapFrom(x => x.Roles.Select(r => r.Name).ToList()));
+                .ForMember(x => x.Roles, opt => opt.MapFrom((_, _, _, context) => (string[])context.Items["roles"]));
 
             CreateMap<User, UserWithTokenDTO>()
-                .ForMember(x => x.Roles, opt => opt.MapFrom(x => x.Roles.Select(r => r.Name).ToList()))
+                .ForMember(x => x.Roles, opt => opt.MapFrom((_, _, _, context) => (string[])context.Items["roles"]))
                 .ForMember(x => x.Token, opt => opt.MapFrom((_, _, _, context) => (string)context.Items["token"]));
         }
     }

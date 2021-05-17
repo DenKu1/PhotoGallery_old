@@ -14,6 +14,6 @@ namespace PhotoGallery.DAL.Entities
         public int UserId { get; set; }
         public virtual User User { get; set; }
 
-        public virtual ICollection<Photo> Photos { get; set; }
+        public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
     }
 }

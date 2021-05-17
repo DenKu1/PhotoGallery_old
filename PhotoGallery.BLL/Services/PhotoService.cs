@@ -31,12 +31,12 @@ namespace PhotoGallery.BLL.Services
 
             if (album == null)
             {
-                throw new ValidationException("Album was not found");
+                throw new PhotoGalleryNotFoundException("Album was not found");
             }
 
             if (album.UserId != photoDTO.UserId)
             {
-                throw new ValidationException("You don`t have permission to add photos to this album");
+                throw new PhotoGalleryNotAllowedException("You don`t have permission to add photos to this album");
             }
 
             var creationTime = DateTime.Now;
@@ -57,7 +57,7 @@ namespace PhotoGallery.BLL.Services
 
             if (photo == null)
             {
-                throw new ValidationException("Photo was not found");
+                throw new PhotoGalleryNotFoundException("Photo was not found");
             }
 
             return mapper.Map<PhotoDTO>(photo);
@@ -76,12 +76,12 @@ namespace PhotoGallery.BLL.Services
 
             if (photo == null)
             {
-                throw new ValidationException("Photo was not found");
+                throw new PhotoGalleryNotFoundException("Photo was not found");
             }
 
             if (photo.Album.UserId != userId)
             {
-                throw new ValidationException("You don`t have permission to delete this photo");
+                throw new PhotoGalleryNotAllowedException("You don`t have permission to delete this photo");
             }            
 
             var album = await unitOfWork.Albums.GetByIdAsync(photo.AlbumId);
@@ -98,12 +98,12 @@ namespace PhotoGallery.BLL.Services
 
             if (photo == null)
             {
-                throw new ValidationException("Photo was not found");
+                throw new PhotoGalleryNotFoundException("Photo was not found");
             }
 
             if (photo.Album.UserId != photoDTO.UserId)
             {
-                throw new ValidationException("You don`t have permission to update this photo");
+                throw new PhotoGalleryNotAllowedException("You don`t have permission to update this photo");
             }
 
             photo.Name = photoDTO.Name;
@@ -118,7 +118,7 @@ namespace PhotoGallery.BLL.Services
 
             if (photo == null)
             {
-                throw new ValidationException("Photo was not found");
+                throw new PhotoGalleryNotFoundException("Photo was not found");
             }
 
             var like = photo.Likes.FirstOrDefault(l => l.UserId == userId);

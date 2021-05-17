@@ -29,7 +29,7 @@ namespace PhotoGallery.BLL.Services
 
             if (photo == null)
             {
-                throw new ValidationException("Photo was not found");
+                throw new PhotoGalleryNotFoundException("Photo was not found");
             }
 
             var comment = mapper.Map<Comment>(commentAddDTO);            
@@ -48,7 +48,7 @@ namespace PhotoGallery.BLL.Services
 
             if (comment == null)
             {
-                throw new ValidationException("Comment was not found");
+                throw new PhotoGalleryNotFoundException("Comment was not found");
             }
 
             var commentDTO = mapper.Map<CommentDTO>(comment);
@@ -69,12 +69,12 @@ namespace PhotoGallery.BLL.Services
 
             if (comment == null)
             {
-                throw new ValidationException("Comment was not found");
+                throw new PhotoGalleryNotFoundException("Comment was not found");
             }
 
             if (comment.UserId != userId)
             {
-                throw new ValidationException("You don`t have permission to delete this comment");
+                throw new PhotoGalleryNotAllowedException("You don`t have permission to delete this comment");
             }
 
             unitOfWork.Comments.Remove(comment);

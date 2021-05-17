@@ -3,8 +3,8 @@
 namespace PhotoGallery.WEB.Models.In
 {
     public class AlbumUpdateModel
-    {        
-        //TODO: add required for both
+    {
+        [Required(ErrorMessage = "Name should be specified")]
         [MaxLength(50, ErrorMessage = "Name should be less than 50 characters")]
         public string Name { get; set; }
 

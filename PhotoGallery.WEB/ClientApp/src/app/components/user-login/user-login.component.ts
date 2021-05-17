@@ -55,7 +55,7 @@ export class UserLoginComponent implements OnInit {
           this.router.navigate(['/users', this.currentUser.id, 'albums']);
         },
         err => {
-          this.error = err.status === 400 ? err.error : "Unknown error!";         
+          this.error = err.status === 400 ? err.error.message : "Unknown error!";         
           this.loading = false;
         });
   }

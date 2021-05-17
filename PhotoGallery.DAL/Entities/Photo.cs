@@ -13,7 +13,7 @@ namespace PhotoGallery.DAL.Entities
         public int AlbumId { get; set; }
         public virtual Album Album { get; set; }
 
-        public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<Like> Likes { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual ICollection<Like> Likes { get; set; } = new List<Like>();
     }
 }

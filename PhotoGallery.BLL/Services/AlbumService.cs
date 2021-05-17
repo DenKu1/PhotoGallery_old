@@ -24,7 +24,6 @@ namespace PhotoGallery.BLL.Services
             this.unitOfWork = unitOfWork;
         }
 
-        //Do not forget to update userId in controller!
         public async Task<AlbumDTO> AddAlbumAsync(AlbumAddDTO albumDTO)
         {
             var album = mapper.Map<Album>(albumDTO, opt => opt.Items["creationTime"] = DateTime.Now);
@@ -41,7 +40,7 @@ namespace PhotoGallery.BLL.Services
 
             if (album == null)
             {
-                throw new ValidationException("Album was not found"); //TODO: Change exception
+                throw new PhotoGalleryNotFoundException("Album was not found");
             }
 
             return mapper.Map<AlbumDTO>(album);
@@ -60,12 +59,12 @@ namespace PhotoGallery.BLL.Services
 
             if (album == null)
             {
-                throw new ValidationException("Album was not found");
+                throw new PhotoGalleryNotFoundException("Album was not found");
             }
 
             if (album.UserId != userId)
             {
-                throw new ValidationException("You don`t have permission to delete this album");
+                throw new PhotoGalleryNotAllowedException("You don`t have permission to delete this album");
             }
 
             unitOfWork.Albums.Remove(album);
@@ -78,12 +77,12 @@ namespace PhotoGallery.BLL.Services
 
             if (album == null)
             {
-                throw new ValidationException("Album was not found");
+                throw new PhotoGalleryNotFoundException("Album was not found");
             }
 
             if (album.UserId != albumDTO.UserId)
             {
-                throw new ValidationException("You don`t have permission to update this album");
+                throw new PhotoGalleryNotAllowedException("You don`t have permission to update this album");
             }
 
             albumDTO.Name = albumDTO.Name;

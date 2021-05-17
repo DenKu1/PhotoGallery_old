@@ -30,19 +30,19 @@ const routes: Routes = [
     component: AlbumComponent,
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     canActivate: [AuthGuard],
-    data: { roles: ["user"] }
+    data: { roles: ["User"] }
   },
   {
     path: 'albums/:id/photos',
     component: PhotoComponent,
     canActivate: [AuthGuard],
-    data: { roles: ["user"] }
+    data: { roles: ["User"] }
   },
   {
     path: 'admin',
     component: UserManagerComponent,
     canActivate: [AuthGuard],
-    data: { roles: ["admin"] }
+    data: { roles: ["Admin"] }
   },
   {
     path: '**',

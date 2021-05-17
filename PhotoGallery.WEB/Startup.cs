@@ -87,17 +87,16 @@ namespace PhotoGallery.WEB
             }
             else
             {
-                //TODO: Test this approach & add console log to angular app
                 app.UseExceptionHandler(a => a.Run(async context =>
                 {
                     var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
                     var exception = exceptionHandlerPathFeature.Error;
 
-                    var result = JsonConvert.SerializeObject(new { error = exception.Message });
+                    var result = JsonConvert.SerializeObject(new { message = exception.Message });
 
                     context.Response.StatusCode = exception is PhotoGalleryException
-                    ? (int)HttpStatusCode.InternalServerError
-                    : (int)HttpStatusCode.BadRequest;
+                    ? (int)HttpStatusCode.BadRequest
+                    : (int)HttpStatusCode.InternalServerError;
 
                     context.Response.ContentType = "application/json";
 
@@ -123,7 +122,7 @@ namespace PhotoGallery.WEB
                 if (env.IsDevelopment())
                 {
                     spa.UseAngularCliServer(npmScript: "start");
-                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:52818");
                 }
             });
         }

@@ -50,7 +50,7 @@ namespace PhotoGallery.WEB.Controllers
         [HttpPost]
         [Route("api/albums/{albumId}/photos")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult> PostPhoto([FromRoute] int albumId, [FromBody] PhotoAddModel photoAddModel)
+        public async Task<ActionResult<PhotoModel>> PostPhoto([FromRoute] int albumId, [FromBody] PhotoAddModel photoAddModel)
         {
             if (!ModelState.IsValid)
             {
@@ -60,7 +60,7 @@ namespace PhotoGallery.WEB.Controllers
             var photoAddDTO = mapper.Map<PhotoAddDTO>(photoAddModel,
                 opt => { opt.Items["albumId"] = albumId; opt.Items["userId"] = UserId; });
 
-            return Ok(mapper.Map<AlbumModel>(await photoService.AddPhotoAsync(photoAddDTO)));
+            return Ok(mapper.Map<PhotoModel>(await photoService.AddPhotoAsync(photoAddDTO)));
         }
 
         [HttpPost]
