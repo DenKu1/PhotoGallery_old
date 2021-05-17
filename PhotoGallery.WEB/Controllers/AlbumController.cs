@@ -1,135 +1,91 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using PhotoGallery.BLL.DTO;
-using PhotoGallery.BLL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+using AutoMapper;
+
+using PhotoGallery.BLL.DTO.In;
+using PhotoGallery.BLL.Interfaces;
+using PhotoGallery.WEB.Models.In;
+using PhotoGallery.WEB.Models.Out;
+using PhotoGallery.WEB.Controllers.Base;
 
 namespace PhotoGallery.WEB.Controllers
 {
     [ApiController]    
     [Authorize]
-    public class AlbumController : ControllerBase
+    public class AlbumController : ControllerBaseWithUser
     {
-        private readonly IAlbumService _albumService;
+        IMapper mapper;
+        IAlbumService albumService;
 
-        private int UserId => int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
-        public AlbumController(IAlbumService albumService)
+        public AlbumController(IMapper mapper, IAlbumService albumService)
         {
-            _albumService = albumService;
+            this.mapper = mapper;
+            this.albumService = albumService;
         }
 
         [HttpGet]
-        [Route("api/users/{id}/albums")]
+        [Route("api/users/{userId}/albums")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<IEnumerable<AlbumDTO>>> GetAlbums(int id)
+        public async Task<ActionResult<IEnumerable<AlbumModel>>> GetAlbums([FromRoute] int userId)
         {
-            IEnumerable<AlbumDTO> albumDTOs;
+            var albumDTOs = await albumService.GetAlbumsAsync(userId);
 
-            try
-            {
-                albumDTOs = await _albumService.GetAlbumsAsync(id);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
-            return Ok(albumDTOs);
+            return Ok(mapper.Map<IEnumerable<AlbumModel>>(albumDTOs));
         }
 
         [HttpGet]
-        [Route("api/albums/{id}")]
+        [Route("api/albums/{albumId}")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<AlbumDTO>> GetAlbum(int id)
+        public async Task<ActionResult<AlbumModel>> GetAlbum([FromRoute] int albumId)
         {
-            AlbumDTO albumDTO;
+            var albumDTO = await albumService.GetAlbumAsync(albumId);
 
-            try
-            {
-                albumDTO = await _albumService.GetAlbumAsync(id);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
-            return Ok(albumDTO);
+            return Ok(mapper.Map<AlbumModel>(albumDTO));
         }
 
         [HttpPost]
         [Route("api/albums")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<AlbumDTO>> PostAlbum([FromBody] AlbumAddDTO albumAddDTO)
+        public async Task<ActionResult<AlbumModel>> PostAlbum([FromBody] AlbumAddModel albumAddModel)
         {         
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (albumAddDTO.UserId != UserId)
-            {
-                return BadRequest();
-            }
+            var albumAddDTO = mapper.Map<AlbumAddDTO>(albumAddModel, opt => opt.Items["userId"] = UserId);
 
-            AlbumDTO albumDTO;
-
-            try
-            {
-                albumDTO = await _albumService.AddAlbumAsync(albumAddDTO);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
-            return Ok(albumDTO);
+            return Ok(mapper.Map<AlbumModel>(await albumService.AddAlbumAsync(albumAddDTO)));
         }
 
         [HttpPut]
-        [Route("api/albums/{id}")]
+        [Route("api/albums/{albumId}")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult> PutAlbum(int id, [FromBody] AlbumUpdateDTO albumUpdateDTO)
+        public async Task<ActionResult> PutAlbum([FromRoute] int albumId, [FromBody] AlbumUpdateModel albumUpdateModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (albumUpdateDTO.Id != id)
-            {
-                return BadRequest();
-            }
+            var albumUpdateDTO = mapper.Map<AlbumUpdateDTO>(albumUpdateModel,
+                opt => { opt.Items["albumId"] = albumId; opt.Items["userId"] = UserId; });
 
-            try
-            {
-                await _albumService.UpdateAlbumAsync(albumUpdateDTO, UserId);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            await albumService.UpdateAlbumAsync(albumUpdateDTO);
 
             return Ok();
         }
 
         [HttpDelete]
-        [Route("api/albums/{id}")]
+        [Route("api/albums/{albumId}")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult> DeleteAlbum(int id)
+        public async Task<ActionResult> DeleteAlbum([FromRoute] int albumId)
         {
-            try
-            {
-                await _albumService.RemoveAlbumAsync(id, UserId);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            await albumService.RemoveAlbumAsync(albumId, UserId);
 
             return Ok();
         }

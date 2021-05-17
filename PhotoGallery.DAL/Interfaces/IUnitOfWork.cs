@@ -1,11 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Identity;
+
 using PhotoGallery.DAL.Entities;
+
 
 namespace PhotoGallery.DAL.Interfaces
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork
     {
         UserManager<User> UserManager { get; }
         IUserRepository Users { get; }
@@ -13,6 +15,6 @@ namespace PhotoGallery.DAL.Interfaces
         ICommentRepository Comments { get; }
         ILikeRepository Likes { get; }
         IPhotoRepository Photos { get; }        
-        Task<int> SaveAsync();
+        Task SaveAsync();
     }
 }

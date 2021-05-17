@@ -1,152 +1,102 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using PhotoGallery.BLL.DTO;
-using PhotoGallery.BLL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+using AutoMapper;
+
+using PhotoGallery.BLL.Interfaces;
+using PhotoGallery.WEB.Controllers.Base;
+using PhotoGallery.WEB.Models.In;
+using PhotoGallery.WEB.Models.Out;
+using PhotoGallery.BLL.DTO.In;
 
 namespace PhotoGallery.WEB.Controllers
 {
     [ApiController]
     [Authorize]
-    public class PhotoController : ControllerBase
+    public class PhotoController : ControllerBaseWithUser
     {
-        private readonly IPhotoService _photoService;
+        IMapper mapper;
+        IPhotoService photoService;
 
-        private int UserId => int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
-        public PhotoController(IPhotoService photoService)
+        public PhotoController(IMapper mapper, IPhotoService photoService)
         {
-            _photoService = photoService;
+            this.mapper = mapper;
+            this.photoService = photoService;
         }
 
         [HttpGet]
-        [Route("api/albums/{id}/photos")]
+        [Route("api/albums/{albumId}/photos")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<IEnumerable<PhotoDTO>>> GetPhotos(int id)
+        public async Task<ActionResult<IEnumerable<PhotoModel>>> GetPhotos([FromRoute] int albumId)
         {
-            IEnumerable<PhotoDTO> photoDTOs;           
+            var photoDTOs = await photoService.GetPhotosAsync(albumId);
 
-            try
-            {
-                photoDTOs = await _photoService.GetPhotosAsync(id, UserId);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
-            return Ok(photoDTOs);
+            return Ok(mapper.Map<IEnumerable<PhotoModel>>(photoDTOs));
         }
 
         [HttpGet]
-        [Route("api/photos/{id}")]
+        [Route("api/photos/{photoId}")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<PhotoDTO>> GetPhoto(int id)
+        public async Task<ActionResult<PhotoModel>> GetPhoto([FromRoute] int photoId)
         {
-            PhotoDTO photoDTO;
+            var photoDTO = await photoService.GetPhotoAsync(photoId);
 
-            try
-            {
-                photoDTO = await _photoService.GetPhotoAsync(id, UserId);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
-            return Ok(photoDTO);
+            return Ok(mapper.Map<PhotoModel>(photoDTO));
         }
 
         [HttpPost]
-        [Route("api/albums/{id}/photos")]
+        [Route("api/albums/{albumId}/photos")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult> PostPhoto(int id, [FromBody] PhotoAddDTO photoAddDTO)
+        public async Task<ActionResult> PostPhoto([FromRoute] int albumId, [FromBody] PhotoAddModel photoAddModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != photoAddDTO.AlbumId)
-            {
-                return BadRequest();
-            }
+            var photoAddDTO = mapper.Map<PhotoAddDTO>(photoAddModel,
+                opt => { opt.Items["albumId"] = albumId; opt.Items["userId"] = UserId; });
 
-            PhotoDTO photoDTO;
-
-            try
-            {
-                photoDTO = await _photoService.AddPhotoAsync(photoAddDTO, UserId);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
-            return Ok(photoDTO);
+            return Ok(mapper.Map<AlbumModel>(await photoService.AddPhotoAsync(photoAddDTO)));
         }
 
         [HttpPost]
-        [Route("api/photos/{id}/like")]
+        [Route("api/photos/{photoId}/like")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult> LikePhoto(int id)
+        public async Task<ActionResult> LikePhoto([FromRoute] int photoId)
         {
-            try
-            {
-                await _photoService.LikePhotoAsync(id, UserId);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            await photoService.LikePhotoAsync(photoId, UserId);
 
             return Ok();
         }
 
         [HttpPut]
-        [Route("api/photos/{id}")]
+        [Route("api/photos/{photoId}")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult> PutPhoto(int id, [FromBody] PhotoUpdateDTO photoUpdateDTO)
+        public async Task<ActionResult> PutPhoto([FromRoute] int photoId, [FromBody] PhotoUpdateModel photoUpdateModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (photoUpdateDTO.Id != id)
-            {
-                return BadRequest();
-            }
+            var photoUpdateDTO = mapper.Map<PhotoUpdateDTO>(photoUpdateModel,
+                opt => { opt.Items["photoId"] = photoId; opt.Items["userId"] = UserId; });
 
-            try
-            {
-                await _photoService.UpdatePhotoAsync(photoUpdateDTO, UserId);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            await photoService.UpdatePhotoAsync(photoUpdateDTO);
 
             return Ok();
         }
 
         [HttpDelete]
-        [Route("api/photos/{id}")]
+        [Route("api/photos/{photoId}")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult> DeletePhoto(int id)
+        public async Task<ActionResult> DeletePhoto([FromRoute] int photoId)
         {
-            try
-            {
-                await _photoService.RemovePhotoAsync(id, UserId);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            await photoService.RemovePhotoAsync(photoId, UserId);
 
             return Ok();
         }

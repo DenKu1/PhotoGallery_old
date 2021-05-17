@@ -1,108 +1,75 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using PhotoGallery.BLL.DTO;
-using PhotoGallery.BLL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+using AutoMapper;
+
+using PhotoGallery.BLL.Interfaces;
+using PhotoGallery.WEB.Controllers.Base;
+using PhotoGallery.WEB.Models.In;
+using PhotoGallery.WEB.Models.Out;
+using PhotoGallery.BLL.DTO.In;
+using PhotoGallery.BLL.DTO.Out;
 
 namespace PhotoGallery.WEB.Controllers
 {
     [ApiController]
     [Authorize]
-    public class CommentController : ControllerBase
+    public class CommentController : ControllerBaseWithUser
     {
-        private readonly ICommentService _commentService;
+        IMapper mapper;
+        ICommentService commentService;
 
-        private int UserId => int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
-        public CommentController(ICommentService commentService)
+        public CommentController(IMapper mapper, ICommentService commentService)
         {
-            _commentService = commentService;
+            this.mapper = mapper;
+            this.commentService = commentService;
         }
 
         [HttpGet]
-        [Route("api/photos/{id}/comments")]
+        [Route("api/photos/{photoId}/comments")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetComments(int id)
+        public async Task<ActionResult<IEnumerable<CommentModel>>> GetComments([FromRoute] int photoId)
         {
-            IEnumerable<CommentDTO> commentDTOs;
+            var commentDTOs = await commentService.GetCommentsAsync(photoId);
 
-            try
-            {
-                commentDTOs = await _commentService.GetCommentsAsync(id);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
-            return Ok(commentDTOs);
+            return Ok(mapper.Map<IEnumerable<CommentModel>>(commentDTOs));
         }
 
         [HttpGet]
-        [Route("api/comments/{id}")]
+        [Route("api/comments/{commentId}")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<CommentDTO>> GetComment(int id)
+        public async Task<ActionResult<CommentModel>> GetComment([FromRoute] int commentId)
         {
-            CommentDTO commentDTO;
+            var commentDTO = await commentService.GetCommentAsync(commentId);
 
-            try
-            {
-                commentDTO = await _commentService.GetCommentAsync(id);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
-            return Ok(commentDTO);
+            return Ok(mapper.Map<CommentModel>(commentDTO));
         }
 
         [HttpPost]
-        [Route("api/photos/{id}/comments")]
+        [Route("api/photos/{photoId}/comments")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<CommentDTO>> PostComment(int id, [FromBody] CommentAddDTO commentAddDTO)
+        public async Task<ActionResult<CommentModel>> PostComment([FromRoute] int photoId, [FromBody] CommentAddModel commentAddModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (commentAddDTO.PhotoId != id)
-            {
-                return BadRequest();            
-            }
+            var commentAddDTO = mapper.Map<CommentAddDTO>(commentAddModel,
+                opt => { opt.Items["photoId"] = photoId; opt.Items["userId"] = UserId; });
 
-            CommentDTO commentDTO;
-
-            try
-            {
-                commentDTO = await _commentService.AddCommentAsync(commentAddDTO, UserId);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
-            return Ok(commentDTO);
+            return Ok(mapper.Map<CommentDTO>(await commentService.AddCommentAsync(commentAddDTO)));
         }
 
         [HttpDelete]
-        [Route("api/comments/{id}")]
+        [Route("api/comments/{commentId}")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult> DeleteComment(int id)
+        public async Task<ActionResult> DeleteComment([FromRoute] int commentId)
         {
-            try
-            {
-                await _commentService.RemoveCommentAsync(id, UserId);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            await commentService.RemoveCommentAsync(commentId, UserId);
 
             return Ok();
         }

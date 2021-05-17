@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+
 using Microsoft.EntityFrameworkCore;
+
 using PhotoGallery.DAL.Interfaces;
 
 namespace PhotoGallery.DAL.Repositories
@@ -39,7 +41,7 @@ namespace PhotoGallery.DAL.Repositories
             return await _context.Set<TEntity>().ToListAsync();
         }
 
-        public async ValueTask<TEntity> GetByIdAsync(int id)
+        public async Task<TEntity> GetByIdAsync(int id)
         {
             return await _context.Set<TEntity>().FindAsync(id);
         }
@@ -51,17 +53,12 @@ namespace PhotoGallery.DAL.Repositories
 
         public void RemoveRange(IEnumerable<TEntity> entities)
         {
-            _context.Set<TEntity>().RemoveRange();
+            _context.Set<TEntity>().RemoveRange(entities);
         }
 
         public void Update(TEntity entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
-        }
-
-        public async Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> expression)
-        {
-            return await _context.Set<TEntity>().SingleOrDefaultAsync(expression);
         }
     }
 }

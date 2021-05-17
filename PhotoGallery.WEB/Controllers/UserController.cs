@@ -1,11 +1,18 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using PhotoGallery.BLL.DTO;
-using PhotoGallery.BLL.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+using AutoMapper;
+
+using PhotoGallery.BLL.Interfaces;
+using PhotoGallery.WEB.Models.In;
+using PhotoGallery.WEB.Models.Out;
+using System.ComponentModel.DataAnnotations;
+using PhotoGallery.BLL.DTO.In;
 
 namespace PhotoGallery.WEB.Controllers
 {
@@ -13,83 +20,58 @@ namespace PhotoGallery.WEB.Controllers
     [Authorize]
     public class UserController : ControllerBase
     {
-        private readonly IUserService _userService;
+        IMapper mapper;
+        IUserService userService;
 
-        public UserController(IUserService userService)
+        public UserController(IMapper mapper, IUserService userService)
         {
-            _userService = userService;
+            this.mapper = mapper;
+            this.userService = userService;
         }
 
         [HttpGet]
         [Route("api/users")]
         [Authorize(Roles = "Admin")]       
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserModel>>> GetUsers()
         {
-            var users = await _userService.GetUsersAsync();
-            return Ok(users);
+            var userDTOs = await userService.GetUsersAsync();
+
+            return Ok(mapper.Map<IEnumerable<UserModel>>(userDTOs));
         }
 
         [HttpGet]
-        [Route("api/users/{id}")]
+        [Route("api/users/{userId}")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<UserDTO>> GetUser(int id)
+        public async Task<ActionResult<UserModel>> GetUser([FromRoute] int userId)
         {
-            UserDTO userDTO;
+            var userDTO = await userService.GetUserAsync(userId);
 
-            try
-            {
-                userDTO = await _userService.GetUserAsync(id);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
-            return Ok(userDTO);
+            return Ok(mapper.Map<UserModel>(userDTO));
         }
 
         [HttpGet]
-        [Route("api/users/by-user-name/{username}")]
+        [Route("api/users/by-user-name/{userName}")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<UserDTO>> GetUserByUserName(string userName)
+        public async Task<ActionResult<UserModel>> GetUserByUserName([FromRoute][Required] string userName)
         {
-            if (userName == null)
-            {
-                return BadRequest();
-            }
+            var userDTO = await userService.GetUserByUserNameAsync(userName);
 
-            UserDTO userDTO;
-
-            try
-            {
-                userDTO = await _userService.GetUserByUserNameAsync(userName);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
-            return Ok(userDTO);
+            return Ok(mapper.Map<UserModel>(userDTO));
         }
 
         [HttpPost]
         [Route("api/register")]
         [AllowAnonymous]
-        public async Task<ActionResult> RegisterUser([FromBody] UserRegisterDTO userRegisterDTO)
+        public async Task<ActionResult> RegisterUser([FromBody] UserRegisterModel userRegisterModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            try
-            {
-                await _userService.CreateUserAsync(userRegisterDTO);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            var userRegisterDTO = mapper.Map<UserRegisterDTO>(userRegisterModel);
+
+            await userService.CreateUserAsync(userRegisterDTO);
 
             return Ok();
         }
@@ -97,49 +79,29 @@ namespace PhotoGallery.WEB.Controllers
         [HttpPost]
         [Route("api/login")]
         [AllowAnonymous]
-        public async Task<ActionResult> Login([FromBody] UserLoginDTO userLoginDTO)
+        public async Task<ActionResult> Login([FromBody] UserLoginModel userLoginModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            (string, UserDTO) loginData;
+            var userLoginDTO = mapper.Map<UserLoginDTO>(userLoginModel);
 
-            try
-            {
-                loginData = await _userService.LoginAsync(userLoginDTO);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            var userWithTokenDTO = await userService.LoginAsync(userLoginDTO);
 
-            return Ok(new
-            {
-                id = loginData.Item2.Id,
-                userName = loginData.Item2.UserName,
-                email = loginData.Item2.Email,
-                roles = loginData.Item2.Roles.Select(role => role.ToLower()),
-                token = loginData.Item1
-            });
+            return Ok(mapper.Map<UserWithTokenModel>(userWithTokenDTO));
         }
 
         [HttpDelete]
-        [Route("api/users/{id}")]
+        [Route("api/users/{userId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<UserDTO>> DeleteUser(int id)
+        public async Task<ActionResult<UserModel>> DeleteUser([FromRoute] int userId)
         {
-            try
-            {
-                await _userService.DeleteUserAsync(id);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            await userService.RemoveUserAsync(userId);
 
             return Ok();
         }
+
     }
 }

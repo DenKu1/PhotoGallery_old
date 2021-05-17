@@ -1,16 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using PhotoGallery.BLL.DTO;
+
+using PhotoGallery.BLL.DTO.In;
+using PhotoGallery.BLL.DTO.Out;
 
 namespace PhotoGallery.BLL.Interfaces
 {
-    public interface IUserService : IService
+    public interface IUserService
     {
         Task<IEnumerable<UserDTO>> GetUsersAsync();
         Task CreateUserAsync(UserRegisterDTO data);
-        Task<(string, UserDTO)> LoginAsync(UserLoginDTO data);
+        Task<UserWithTokenDTO> LoginAsync(UserLoginDTO data);
         Task<UserDTO> GetUserAsync(int id);
         Task<UserDTO> GetUserByUserNameAsync(string userName);
-        Task DeleteUserAsync(int id);
+        Task RemoveUserAsync(int id);
     }
 }

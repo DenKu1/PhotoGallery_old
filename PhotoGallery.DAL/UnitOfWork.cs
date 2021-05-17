@@ -1,6 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Identity;
+
 using PhotoGallery.DAL.EF;
 using PhotoGallery.DAL.Entities;
 using PhotoGallery.DAL.Interfaces;
@@ -10,61 +11,40 @@ namespace PhotoGallery.DAL
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly GalleryContext _context;
+        GalleryContext galleryContext;
 
-        private AlbumRepository _albumRepository;
-        private CommentRepository _commentRepository;
-        private LikeRepository _likeRepository;
-        private PhotoRepository _photoRepository;
-        private UserRepository _userRepository;
-
-        public UnitOfWork(GalleryContext context, UserManager<User> userManager)
-        {
-            _context = context;
-            UserManager = userManager;
-        }
+        AlbumRepository albumRepository;
+        CommentRepository commentRepository;
+        LikeRepository likeRepository;
+        PhotoRepository photoRepository;
+        UserRepository userRepository;
 
         public UserManager<User> UserManager { get; }
 
         public IAlbumRepository Albums =>
-            _albumRepository ??= new AlbumRepository(_context);
+            albumRepository ??= new AlbumRepository(galleryContext);
 
         public ICommentRepository Comments =>
-            _commentRepository ??= new CommentRepository(_context);
+            commentRepository ??= new CommentRepository(galleryContext);
 
         public ILikeRepository Likes =>
-            _likeRepository ??= new LikeRepository(_context);
+            likeRepository ??= new LikeRepository(galleryContext);
 
         public IPhotoRepository Photos =>
-           _photoRepository ??= new PhotoRepository(_context);
+            photoRepository ??= new PhotoRepository(galleryContext);
 
         public IUserRepository Users =>
-            _userRepository ??= new UserRepository(_context);
+            userRepository ??= new UserRepository(galleryContext);
 
-        public async Task<int> SaveAsync()
+        public UnitOfWork(GalleryContext context, UserManager<User> userManager)
         {
-            return await _context.SaveChangesAsync();
+            galleryContext = context;
+            UserManager = userManager;
         }
 
-        private bool disposed = false;
-
-        protected virtual void Dispose(bool disposing)
+        public async Task SaveAsync()
         {
-            if (!disposed)
-            {
-                if (disposing)
-                {
-                    _context.Dispose();
-                }
-
-                disposed = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            await galleryContext.SaveChangesAsync();
         }
     }
 }

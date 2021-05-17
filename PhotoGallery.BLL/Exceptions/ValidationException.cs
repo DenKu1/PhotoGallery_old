@@ -11,5 +11,6 @@ namespace PhotoGallery.BLL.Exceptions
         public ValidationException(string message) : base(message)
         {
         }
+        //TODO: Add more exceptions
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using Microsoft.EntityFrameworkCore;
+
 using PhotoGallery.DAL.EF;
 using PhotoGallery.DAL.Entities;
 using PhotoGallery.DAL.Interfaces;

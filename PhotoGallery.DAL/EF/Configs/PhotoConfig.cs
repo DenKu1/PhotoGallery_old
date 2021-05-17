@@ -1,6 +1,7 @@
-﻿using PhotoGallery.DAL.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+using PhotoGallery.DAL.Entities;
 
 namespace PhotoGallery.DAL.EF.Configs
 {

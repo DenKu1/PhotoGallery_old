@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace PhotoGallery.DAL.Entities
 {
@@ -16,11 +15,5 @@ namespace PhotoGallery.DAL.Entities
 
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Like> Likes { get; set; }
-
-        public Photo()
-        {
-            Comments = new Collection<Comment>();
-            Likes = new Collection<Like>();
-        }
     }
 }

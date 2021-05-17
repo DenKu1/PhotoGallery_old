@@ -22,7 +22,7 @@ export class CommentService {
   }
 
   createComment(photoId: number, text: string): Observable<Comment> {
-    return this.http.post<Comment>(`${environment.apiUrl}/photos/${photoId}/comments`, { photoId, text })
+    return this.http.post<Comment>(`${environment.apiUrl}/photos/${photoId}/comments`, { text })
   }
 
   deleteComment(id: number) {

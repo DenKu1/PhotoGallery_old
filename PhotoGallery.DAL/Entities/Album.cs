@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace PhotoGallery.DAL.Entities
 {
@@ -16,10 +15,5 @@ namespace PhotoGallery.DAL.Entities
         public virtual User User { get; set; }
 
         public virtual ICollection<Photo> Photos { get; set; }
-
-        public Album()
-        {
-            Photos = new Collection<Photo>();
-        }
     }
 }

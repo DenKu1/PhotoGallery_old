@@ -28,15 +28,11 @@ export class AlbumService {
   }
 
   createAlbum(name: string, description: string): Observable<Album> {
-    return this.http.post<Album>(`${environment.apiUrl}/albums`, { userId: this.currentUser.id, name, description })
+    return this.http.post<Album>(`${environment.apiUrl}/albums`, { name, description })
   }
 
   updateAlbum(id: number, name: string = null, description: string = null): Observable<Album> {
-    if (name === null && description === null) {
-      return;
-    }
-
-    return this.http.put<Album>(`${environment.apiUrl}/albums/${id}`, { id, name, description })
+    return this.http.put<Album>(`${environment.apiUrl}/albums/${id}`, { name, description })
   }
 
   deleteAlbum(id: number) {

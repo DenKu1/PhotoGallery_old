@@ -22,11 +22,11 @@ export class PhotoService {
   }
 
   createPhoto(albumId: number, name: string, path: string): Observable<Photo> {
-    return this.http.post<Photo>(`${environment.apiUrl}/albums/${albumId}/photos`, { albumId, name, path })
+    return this.http.post<Photo>(`${environment.apiUrl}/albums/${albumId}/photos`, { name, path })
   }
 
   updatePhoto(id: number, name: string): Observable<Photo> {
-    return this.http.put<Photo>(`${environment.apiUrl}/photos/${id}`, { id, name })
+    return this.http.put<Photo>(`${environment.apiUrl}/photos/${id}`, { name })
   }
 
   deletePhoto(id: number) {

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using AutoMapper;
-using PhotoGallery.BLL.DTO;
+
+using PhotoGallery.BLL.DTO.In;
+using PhotoGallery.BLL.DTO.Out;
 using PhotoGallery.BLL.Exceptions;
 using PhotoGallery.BLL.Interfaces;
 using PhotoGallery.DAL.Entities;
@@ -10,62 +13,50 @@ using PhotoGallery.DAL.Interfaces;
 
 namespace PhotoGallery.BLL.Services
 {
-    public class AlbumService : Service, IAlbumService
+    public class AlbumService : IAlbumService
     {
-        public AlbumService(IMapper mapper, IUnitOfWork unitOfWork) : base(mapper, unitOfWork)
+        IMapper mapper;
+        IUnitOfWork unitOfWork;
+
+        public AlbumService(IMapper mapper, IUnitOfWork unitOfWork)
         {
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
         }
 
         //Do not forget to update userId in controller!
         public async Task<AlbumDTO> AddAlbumAsync(AlbumAddDTO albumDTO)
         {
-            if (albumDTO == null)
-            {
-                throw null;
-            }
+            var album = mapper.Map<Album>(albumDTO, opt => opt.Items["creationTime"] = DateTime.Now);
 
-            Album album = _mp.Map<Album>(albumDTO);
+            await unitOfWork.Albums.AddAsync(album);
+            await unitOfWork.SaveAsync();
 
-            var curDateTime = DateTime.Now;
-
-            album.Created = curDateTime;
-            album.Updated = curDateTime;
-
-            await _unit.Albums.AddAsync(album);
-            await _unit.SaveAsync();
-
-            return _mp.Map<AlbumDTO>(album);
+            return mapper.Map<AlbumDTO>(album);
         }
 
         public async Task<AlbumDTO> GetAlbumAsync(int albumId)
         {
-            var album = await _unit.Albums.GetByIdAsync(albumId);
+            var album = await unitOfWork.Albums.GetByIdAsync(albumId);
 
             if (album == null)
             {
-                throw new ValidationException("Album was not found");
+                throw new ValidationException("Album was not found"); //TODO: Change exception
             }
 
-            return _mp.Map<AlbumDTO>(album);
+            return mapper.Map<AlbumDTO>(album);
         }
 
         public async Task<IEnumerable<AlbumDTO>> GetAlbumsAsync(int userId)
         {
-            var user = await _unit.UserManager.FindByIdAsync(userId.ToString());
+            var albums = await unitOfWork.Albums.Find(a => a.UserId == userId);
 
-            if (user == null)
-            {
-                throw new ValidationException("User was not found");
-            }
-
-            var albums = user.Albums;
-
-            return _mp.Map<IEnumerable<AlbumDTO>>(albums);
+            return mapper.Map<IEnumerable<AlbumDTO>>(albums);
         }
 
         public async Task RemoveAlbumAsync(int albumId, int userId)
         {
-            var album = await _unit.Albums.GetByIdAsync(albumId);
+            var album = await unitOfWork.Albums.GetByIdAsync(albumId);
 
             if (album == null)
             {
@@ -77,48 +68,31 @@ namespace PhotoGallery.BLL.Services
                 throw new ValidationException("You don`t have permission to delete this album");
             }
 
-            _unit.Albums.Remove(album);
-            await _unit.SaveAsync();
+            unitOfWork.Albums.Remove(album);
+            await unitOfWork.SaveAsync();
         }
 
-        public async Task UpdateAlbumAsync(AlbumUpdateDTO albumDTO, int userId)
+        public async Task UpdateAlbumAsync(AlbumUpdateDTO albumDTO)
         {
-            if (albumDTO == null)
-            {
-                throw null;
-            }
-
-            if (albumDTO.Name == null && albumDTO.Description == null)
-            {
-                return;
-            }
-
-            var album = await _unit.Albums.GetByIdAsync(albumDTO.Id);
+            var album = await unitOfWork.Albums.GetByIdAsync(albumDTO.Id);
 
             if (album == null)
             {
                 throw new ValidationException("Album was not found");
             }
 
-            if (album.UserId != userId)
+            if (album.UserId != albumDTO.UserId)
             {
                 throw new ValidationException("You don`t have permission to update this album");
             }
 
-            if (albumDTO.Name != null)
-            {
-                album.Name = albumDTO.Name;
-            }
-
-            if (albumDTO.Description != null)
-            {
-                album.Description = albumDTO.Description != "" ? albumDTO.Description : null;
-            }
+            albumDTO.Name = albumDTO.Name;
+            albumDTO.Description = albumDTO.Description;
 
             album.Updated = DateTime.Now;
 
-            _unit.Albums.Update(album);
-            await _unit.SaveAsync();
+            unitOfWork.Albums.Update(album);
+            await unitOfWork.SaveAsync();
         }
     }
 }

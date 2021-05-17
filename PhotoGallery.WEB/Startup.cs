@@ -1,15 +1,27 @@
 using System;
+using System.Net;
 using System.Text;
-using PhotoGallery.BLL.Configs;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+
+using Newtonsoft.Json;
+
+using PhotoGallery.BLL.Configuration;
+using PhotoGallery.BLL.Configuration.Automapper;
+using PhotoGallery.BLL.Configuration.DI;
+using PhotoGallery.BLL.Exceptions;
+using PhotoGallery.WEB.Configuration.Automapper;
+using PhotoGallery.WEB.Configuration.DI;
 
 namespace PhotoGallery.WEB
 {
@@ -22,7 +34,6 @@ namespace PhotoGallery.WEB
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             var key = Configuration["ApplicationSettings:JwtKey"];
@@ -61,46 +72,52 @@ namespace PhotoGallery.WEB
 
             services.AddCors();
             services.AddControllers();
-            
-            services.Bind(connectionString);
+            services.AddAutoMapper(typeof(ModelProfile), typeof(DtoProfile));
+
+            services.AddEntityFramework(connectionString);
+            services.AddRepositories();
+            services.AddServices();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
             else
             {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                //TODO: Test this approach & add console log to angular app
+                app.UseExceptionHandler(a => a.Run(async context =>
+                {
+                    var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+                    var exception = exceptionHandlerPathFeature.Error;
+
+                    var result = JsonConvert.SerializeObject(new { error = exception.Message });
+
+                    context.Response.StatusCode = exception is PhotoGalleryException
+                    ? (int)HttpStatusCode.InternalServerError
+                    : (int)HttpStatusCode.BadRequest;
+
+                    context.Response.ContentType = "application/json";
+
+                    await context.Response.WriteAsync(result);
+                }));
             }
 
             app.UseCors(builder => builder.WithOrigins("http://localhost:5001")
                 .AllowAnyHeader()
                 .AllowAnyMethod());
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthentication();
-
             app.UseAuthorization();
-
             app.UseStaticFiles();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             app.UseSpa(spa =>
             {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
                 spa.Options.SourcePath = "ClientApp";
 
                 if (env.IsDevelopment())
