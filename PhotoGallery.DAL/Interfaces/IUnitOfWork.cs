@@ -11,10 +11,10 @@ namespace PhotoGallery.DAL.Interfaces
     {
         UserManager<User> UserManager { get; }
         IUserRepository Users { get; }
-        IAlbumRepository Albums { get; }
-        ICommentRepository Comments { get; }
-        ILikeRepository Likes { get; }
-        IPhotoRepository Photos { get; }        
+        IGenericRepository<Album> Albums { get; }
+        IGenericRepository<Comment> Comments { get; }
+        IGenericRepository<Like> Likes { get; }
+        IGenericRepository<Photo> Photos { get; }
         Task SaveAsync();
     }
 }

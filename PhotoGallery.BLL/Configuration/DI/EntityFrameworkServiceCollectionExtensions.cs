@@ -6,7 +6,7 @@ using PhotoGallery.DAL.Entities;
 
 namespace PhotoGallery.BLL.Configuration.DI
 {
-    public static class EFServiceCollectionExtensions
+    public static class EntityFrameworkServiceCollectionExtensions
     {
         public static IServiceCollection AddEntityFramework(this IServiceCollection services, string connectionString)
         {

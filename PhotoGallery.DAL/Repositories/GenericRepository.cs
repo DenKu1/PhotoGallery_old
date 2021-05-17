@@ -12,53 +12,46 @@ namespace PhotoGallery.DAL.Repositories
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
-        protected readonly DbContext _context;
+        protected DbContext context;
 
         public GenericRepository(DbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task AddAsync(TEntity entity)
         {
-            await _context.Set<TEntity>().AddAsync(entity);
+            await context.Set<TEntity>().AddAsync(entity);
         }
 
         public async Task AddRangeAsync(IEnumerable<TEntity> entities)
         {
-            await _context.Set<TEntity>().AddRangeAsync(entities);
+            await context.Set<TEntity>().AddRangeAsync(entities);
         }
 
         public async Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> expression)
         {
-            return await _context.Set<TEntity>()
-                .Where(expression)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<TEntity>> GetAllAsync()
-        {
-            return await _context.Set<TEntity>().ToListAsync();
+            return await context.Set<TEntity>().Where(expression).ToListAsync();
         }
 
         public async Task<TEntity> GetByIdAsync(int id)
         {
-            return await _context.Set<TEntity>().FindAsync(id);
+            return await context.Set<TEntity>().FindAsync(id);
         }
 
         public void Remove(TEntity entity)
         {
-            _context.Set<TEntity>().Remove(entity);
+            context.Set<TEntity>().Remove(entity);
         }
 
         public void RemoveRange(IEnumerable<TEntity> entities)
         {
-            _context.Set<TEntity>().RemoveRange(entities);
+            context.Set<TEntity>().RemoveRange(entities);
         }
 
         public void Update(TEntity entity)
         {
-            _context.Entry(entity).State = EntityState.Modified;
+            context.Entry(entity).State = EntityState.Modified;
         }
     }
 }

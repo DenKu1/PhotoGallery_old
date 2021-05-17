@@ -41,17 +41,17 @@ namespace PhotoGallery.WEB
 
             services.Configure<JwtSettings>(Configuration.GetSection("ApplicationSettings"));           
 
-            services.AddAuthentication(x =>
+            services.AddAuthentication(opt =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(cfg =>
+            .AddJwtBearer(opt =>
             {
-                cfg.RequireHttpsMetadata = false;
-                cfg.SaveToken = false;
-                cfg.TokenValidationParameters = new TokenValidationParameters
+                opt.RequireHttpsMetadata = false;
+                opt.SaveToken = false;
+                opt.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
@@ -61,13 +61,13 @@ namespace PhotoGallery.WEB
                 };
             });
 
-            services.Configure<IdentityOptions>(options =>
+            services.Configure<IdentityOptions>(opt =>
             {
-                options.Password.RequireDigit = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequiredLength = 4;
+                opt.Password.RequireDigit = false;
+                opt.Password.RequireLowercase = false;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequiredLength = 4;
             });
 
             services.AddCors();

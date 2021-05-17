@@ -1,4 +1,6 @@
-﻿namespace PhotoGallery.DAL.Entities
+﻿using PhotoGallery.DAL.Entities.Base;
+
+namespace PhotoGallery.DAL.Entities
 {
     public class Comment : BaseEntity<int>
     {

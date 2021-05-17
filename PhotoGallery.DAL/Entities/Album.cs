@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using PhotoGallery.DAL.Entities.Base;
+
 namespace PhotoGallery.DAL.Entities
 {
     public class Album : BaseEntity<int>
