@@ -12,6 +12,7 @@ using PhotoGallery.WEB.Models.In;
 using PhotoGallery.WEB.Models.Out;
 using PhotoGallery.BLL.DTO.In;
 using PhotoGallery.BLL.DTO.Out;
+using PhotoGallery.WEB.Filters;
 
 namespace PhotoGallery.WEB.Controllers
 {
@@ -51,13 +52,9 @@ namespace PhotoGallery.WEB.Controllers
         [HttpPost]
         [Route("api/photos/{photoId}/comments")]
         [Authorize(Roles = "User")]
+        [ModelStateValidation]
         public async Task<ActionResult<CommentModel>> PostComment([FromRoute] int photoId, [FromBody] CommentAddModel commentAddModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var commentAddDTO = mapper.Map<CommentAddDTO>(commentAddModel,
                 opt => { opt.Items["photoId"] = photoId; opt.Items["userId"] = UserId; });
 

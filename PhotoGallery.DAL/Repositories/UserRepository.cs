@@ -11,26 +11,26 @@ namespace PhotoGallery.DAL.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly GalleryContext _context;
+        GalleryContext context;
 
         public UserRepository(GalleryContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
-        public async Task<IEnumerable<User>> GetAll()
+        public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await context.Users.ToListAsync();
         }
 
         public async Task<User> GetByIdAsync(int id)
         {
-            return await _context.Users.FindAsync(id);
+            return await context.Users.FindAsync(id);
         }
 
         public async Task<User> GetByUserNameAsync(string userName)
         {
-            return await _context.Users.SingleOrDefaultAsync(u => u.UserName == userName);
+            return await context.Users.SingleOrDefaultAsync(u => u.UserName == userName);
         }
     }
 }

@@ -11,6 +11,7 @@ using PhotoGallery.WEB.Models.In;
 using PhotoGallery.WEB.Models.Out;
 using System.ComponentModel.DataAnnotations;
 using PhotoGallery.BLL.DTO.In;
+using PhotoGallery.WEB.Filters;
 
 namespace PhotoGallery.WEB.Controllers
 {
@@ -60,13 +61,9 @@ namespace PhotoGallery.WEB.Controllers
         [HttpPost]
         [Route("api/register")]
         [AllowAnonymous]
+        [ModelStateValidation]
         public async Task<ActionResult> RegisterUser([FromBody] UserRegisterModel userRegisterModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var userRegisterDTO = mapper.Map<UserRegisterDTO>(userRegisterModel);
 
             await userService.CreateUserAsync(userRegisterDTO);
@@ -77,13 +74,9 @@ namespace PhotoGallery.WEB.Controllers
         [HttpPost]
         [Route("api/login")]
         [AllowAnonymous]
+        [ModelStateValidation]
         public async Task<ActionResult> Login([FromBody] UserLoginModel userLoginModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var userLoginDTO = mapper.Map<UserLoginDTO>(userLoginModel);
 
             var userWithTokenDTO = await userService.LoginAsync(userLoginDTO);

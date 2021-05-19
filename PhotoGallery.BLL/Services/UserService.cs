@@ -37,7 +37,7 @@ namespace PhotoGallery.BLL.Services
 
         public async Task<IEnumerable<UserDTO>> GetUsersAsync()
         {
-            var users = await unitOfWork.Users.GetAll();
+            var users = await unitOfWork.Users.GetAllAsync();
 
             return users.Select(u => mapper.Map<UserDTO>(u, opt =>
                 opt.Items["roles"] = unitOfWork.UserManager.GetRolesAsync(u).Result.ToArray()));

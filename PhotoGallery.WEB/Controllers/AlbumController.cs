@@ -11,6 +11,7 @@ using PhotoGallery.BLL.Interfaces;
 using PhotoGallery.WEB.Models.In;
 using PhotoGallery.WEB.Models.Out;
 using PhotoGallery.WEB.Controllers.Base;
+using PhotoGallery.WEB.Filters;
 
 namespace PhotoGallery.WEB.Controllers
 {
@@ -50,13 +51,9 @@ namespace PhotoGallery.WEB.Controllers
         [HttpPost]
         [Route("api/albums")]
         [Authorize(Roles = "User")]
+        [ModelStateValidation]
         public async Task<ActionResult<AlbumModel>> PostAlbum([FromBody] AlbumAddModel albumAddModel)
         {         
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var albumAddDTO = mapper.Map<AlbumAddDTO>(albumAddModel, opt => opt.Items["userId"] = UserId);
 
             return Ok(mapper.Map<AlbumModel>(await albumService.AddAlbumAsync(albumAddDTO)));
@@ -65,13 +62,9 @@ namespace PhotoGallery.WEB.Controllers
         [HttpPut]
         [Route("api/albums/{albumId}")]
         [Authorize(Roles = "User")]
+        [ModelStateValidation]
         public async Task<ActionResult> PutAlbum([FromRoute] int albumId, [FromBody] AlbumUpdateModel albumUpdateModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var albumUpdateDTO = mapper.Map<AlbumUpdateDTO>(albumUpdateModel,
                 opt => { opt.Items["albumId"] = albumId; opt.Items["userId"] = UserId; });
 

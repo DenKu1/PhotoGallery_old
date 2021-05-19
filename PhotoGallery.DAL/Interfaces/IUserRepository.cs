@@ -7,7 +7,7 @@ namespace PhotoGallery.DAL.Interfaces
 {
     public interface IUserRepository
     {
-        Task<IEnumerable<User>> GetAll();
+        Task<IEnumerable<User>> GetAllAsync();
         Task<User> GetByUserNameAsync(string userName);
         Task<User> GetByIdAsync(int id);
     }
