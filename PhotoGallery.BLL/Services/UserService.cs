@@ -12,7 +12,6 @@ using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
 using PhotoGallery.BLL.DTO.In;
 using PhotoGallery.BLL.DTO.Out;
-using PhotoGallery.BLL.Exceptions;
 using PhotoGallery.BLL.Interfaces;
 using PhotoGallery.DAL.Entities;
 using PhotoGallery.DAL.Interfaces;
@@ -24,14 +23,15 @@ namespace PhotoGallery.BLL.Services
     {
         IMapper mapper;
         IUnitOfWork unitOfWork;
+        IServiceHelper helper;
 
         JwtSettings jwtSettings;
 
-        public UserService(IMapper mapper, IUnitOfWork unitOfWork, IOptions<JwtSettings> jwtSettings)
+        public UserService(IMapper mapper, IUnitOfWork unitOfWork, IServiceHelper helper, IOptions<JwtSettings> jwtSettings)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
-
+            this.helper = helper;
             this.jwtSettings = jwtSettings.Value;
         }
 
@@ -46,11 +46,7 @@ namespace PhotoGallery.BLL.Services
         public async Task<UserDTO> GetUserAsync(int id)
         {
             var user = await unitOfWork.Users.GetByIdAsync(id);
-
-            if (user == null)
-            {
-                throw new PhotoGalleryNotFoundException("User was not found");
-            }
+            helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(user);
 
             var roles = unitOfWork.UserManager.GetRolesAsync(user).Result.ToArray();
 
@@ -60,11 +56,7 @@ namespace PhotoGallery.BLL.Services
         public async Task<UserDTO> GetUserByUserNameAsync(string userName)
         {
             var user = await unitOfWork.Users.GetByUserNameAsync(userName);
-
-            if (user == null)
-            {
-                throw new PhotoGalleryNotFoundException("User was not found");
-            }
+            helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(user);
 
             var roles = unitOfWork.UserManager.GetRolesAsync(user).Result.ToArray();
 
@@ -73,17 +65,13 @@ namespace PhotoGallery.BLL.Services
 
         public async Task CreateUserAsync(UserRegisterDTO userRegisterDTO)
         {
-            if (await unitOfWork.UserManager.FindByEmailAsync(userRegisterDTO.Email) != null)
-            {
-                throw new PhotoGalleryFailedRegisterException("User with this email already exists");
-            }
+            var userByMail = await unitOfWork.UserManager.FindByEmailAsync(userRegisterDTO.Email);
+            helper.ThrowPhotoGalleryFailedRegisterExceptionIfModelIsNotNull(userByMail, "User with this email already exists");
 
-            if (await unitOfWork.UserManager.FindByNameAsync(userRegisterDTO.UserName) != null)
-            {
-                throw new PhotoGalleryFailedRegisterException("User with this username already exists");
-            }
+            var userByName = await unitOfWork.UserManager.FindByNameAsync(userRegisterDTO.UserName);
+            helper.ThrowPhotoGalleryFailedRegisterExceptionIfModelIsNotNull(userByName, "User with this username already exists");
 
-            User user = new User
+            var user = new User
             {
                 UserName = userRegisterDTO.UserName,
                 Email = userRegisterDTO.Email
@@ -95,12 +83,9 @@ namespace PhotoGallery.BLL.Services
 
         public async Task<UserWithTokenDTO> LoginAsync(UserLoginDTO userLoginDTO)
         {
-            User user = await unitOfWork.UserManager.FindByNameAsync(userLoginDTO.UserName);
-
-            if (user == null || !await unitOfWork.UserManager.CheckPasswordAsync(user, userLoginDTO.Password))
-            {
-                throw new PhotoGalleryFailedLoginException("Incorrect username or password");
-            }
+            var user = await unitOfWork.UserManager.FindByNameAsync(userLoginDTO.UserName);
+            var isPasswordValid = await unitOfWork.UserManager.CheckPasswordAsync(user, userLoginDTO.Password);
+            helper.ThrowPhotoGalleryFailedLoginExceptionIfModelIsNullOrPasswordInvalid(user, isPasswordValid);
 
             var token = GenerateJwtToken(user);
             var roles = unitOfWork.UserManager.GetRolesAsync(user).Result.ToArray();
@@ -111,11 +96,7 @@ namespace PhotoGallery.BLL.Services
         public async Task RemoveUserAsync(int userId)
         {
             var user = await unitOfWork.UserManager.FindByIdAsync(userId.ToString());
-
-            if (user == null)
-            {
-                throw new PhotoGalleryNotFoundException("User was not found");
-            }
+            helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(user);
 
             // Delete user`s likes before deleting user account
             IEnumerable<Like> userLikes = await unitOfWork.Likes.Find(like => like.UserId == userId);

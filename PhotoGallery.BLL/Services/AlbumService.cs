@@ -6,7 +6,6 @@ using AutoMapper;
 
 using PhotoGallery.BLL.DTO.In;
 using PhotoGallery.BLL.DTO.Out;
-using PhotoGallery.BLL.Exceptions;
 using PhotoGallery.BLL.Interfaces;
 using PhotoGallery.DAL.Entities;
 using PhotoGallery.DAL.Interfaces;
@@ -17,11 +16,13 @@ namespace PhotoGallery.BLL.Services
     {
         IMapper mapper;
         IUnitOfWork unitOfWork;
+        IServiceHelper helper;
 
-        public AlbumService(IMapper mapper, IUnitOfWork unitOfWork)
+        public AlbumService(IMapper mapper, IUnitOfWork unitOfWork, IServiceHelper helper)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
+            this.helper = helper;
         }
 
         public async Task<AlbumDTO> AddAlbumAsync(AlbumAddDTO albumDTO)
@@ -38,10 +39,7 @@ namespace PhotoGallery.BLL.Services
         {
             var album = await unitOfWork.Albums.GetByIdAsync(albumId);
 
-            if (album == null)
-            {
-                throw new PhotoGalleryNotFoundException("Album was not found");
-            }
+            helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(album);
 
             return mapper.Map<AlbumDTO>(album);
         }
@@ -57,15 +55,8 @@ namespace PhotoGallery.BLL.Services
         {
             var album = await unitOfWork.Albums.GetByIdAsync(albumId);
 
-            if (album == null)
-            {
-                throw new PhotoGalleryNotFoundException("Album was not found");
-            }
-
-            if (album.UserId != userId)
-            {
-                throw new PhotoGalleryNotAllowedException("You don`t have permission to delete this album");
-            }
+            helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(album);
+            helper.ThrowPhotoGalleryNotAllowedExceptionIfDifferentId(album.UserId, userId);
 
             unitOfWork.Albums.Remove(album);
             await unitOfWork.SaveAsync();
@@ -75,15 +66,8 @@ namespace PhotoGallery.BLL.Services
         {
             var album = await unitOfWork.Albums.GetByIdAsync(albumDTO.Id);
 
-            if (album == null)
-            {
-                throw new PhotoGalleryNotFoundException("Album was not found");
-            }
-
-            if (album.UserId != albumDTO.UserId)
-            {
-                throw new PhotoGalleryNotAllowedException("You don`t have permission to update this album");
-            }
+            helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(album);
+            helper.ThrowPhotoGalleryNotAllowedExceptionIfDifferentId(album.UserId, albumDTO.UserId);
 
             albumDTO.Name = albumDTO.Name;
             albumDTO.Description = albumDTO.Description;

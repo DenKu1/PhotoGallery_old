@@ -2,7 +2,9 @@
 {
     public class PhotoGalleryNotAllowedException : PhotoGalleryException
     {
-        public PhotoGalleryNotAllowedException() : base()
+        const string defaultMessage = "No permission to perform this operation";
+
+        public PhotoGalleryNotAllowedException() : base(defaultMessage)
         {
         }
 

@@ -7,7 +7,6 @@ using AutoMapper;
 
 using PhotoGallery.BLL.DTO.In;
 using PhotoGallery.BLL.DTO.Out;
-using PhotoGallery.BLL.Exceptions;
 using PhotoGallery.BLL.Interfaces;
 using PhotoGallery.DAL.Entities;
 using PhotoGallery.DAL.Interfaces;
@@ -18,26 +17,21 @@ namespace PhotoGallery.BLL.Services
     {
         IMapper mapper;
         IUnitOfWork unitOfWork;
+        IServiceHelper helper;
 
-        public PhotoService(IMapper mapper, IUnitOfWork unitOfWork)
+        public PhotoService(IMapper mapper, IUnitOfWork unitOfWork, IServiceHelper helper)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
+            this.helper = helper;
         }
 
         public async Task<PhotoDTO> AddPhotoAsync(PhotoAddDTO photoDTO)
         {
             var album = await unitOfWork.Albums.GetByIdAsync(photoDTO.AlbumId);
 
-            if (album == null)
-            {
-                throw new PhotoGalleryNotFoundException("Album was not found");
-            }
-
-            if (album.UserId != photoDTO.UserId)
-            {
-                throw new PhotoGalleryNotAllowedException("You don`t have permission to add photos to this album");
-            }
+            helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(album);
+            helper.ThrowPhotoGalleryNotAllowedExceptionIfDifferentId(album.UserId, photoDTO.UserId);
 
             var creationTime = DateTime.Now;
 
@@ -55,10 +49,7 @@ namespace PhotoGallery.BLL.Services
         {
             var photo = await unitOfWork.Photos.GetByIdAsync(photoId);
 
-            if (photo == null)
-            {
-                throw new PhotoGalleryNotFoundException("Photo was not found");
-            }
+            helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(photo);
 
             return mapper.Map<PhotoDTO>(photo);
         }
@@ -74,15 +65,8 @@ namespace PhotoGallery.BLL.Services
         {
             var photo = await unitOfWork.Photos.GetByIdAsync(photoId);
 
-            if (photo == null)
-            {
-                throw new PhotoGalleryNotFoundException("Photo was not found");
-            }
-
-            if (photo.Album.UserId != userId)
-            {
-                throw new PhotoGalleryNotAllowedException("You don`t have permission to delete this photo");
-            }            
+            helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(photo);
+            helper.ThrowPhotoGalleryNotAllowedExceptionIfDifferentId(photo.Album.UserId, userId);         
 
             var album = await unitOfWork.Albums.GetByIdAsync(photo.AlbumId);
             album.Updated = DateTime.Now;
@@ -96,15 +80,8 @@ namespace PhotoGallery.BLL.Services
         {
             var photo = await unitOfWork.Photos.GetByIdAsync(photoDTO.Id);
 
-            if (photo == null)
-            {
-                throw new PhotoGalleryNotFoundException("Photo was not found");
-            }
-
-            if (photo.Album.UserId != photoDTO.UserId)
-            {
-                throw new PhotoGalleryNotAllowedException("You don`t have permission to update this photo");
-            }
+            helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(photo);
+            helper.ThrowPhotoGalleryNotAllowedExceptionIfDifferentId(photo.Album.UserId, photoDTO.UserId);
 
             photo.Name = photoDTO.Name;
 
@@ -116,10 +93,7 @@ namespace PhotoGallery.BLL.Services
         {
             var photo = await unitOfWork.Photos.GetByIdAsync(photoId);
 
-            if (photo == null)
-            {
-                throw new PhotoGalleryNotFoundException("Photo was not found");
-            }
+            helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(photo);
 
             var like = photo.Likes.FirstOrDefault(l => l.UserId == userId);
 

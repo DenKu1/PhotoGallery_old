@@ -2,7 +2,9 @@
 {
     public class PhotoGalleryFailedLoginException : PhotoGalleryException
     {
-        public PhotoGalleryFailedLoginException() : base()
+        const string defaultMessage = "Incorrect username or password";
+
+        public PhotoGalleryFailedLoginException() : base(defaultMessage)
         {
         }
 

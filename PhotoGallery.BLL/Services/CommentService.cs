@@ -5,7 +5,6 @@ using AutoMapper;
 
 using PhotoGallery.BLL.DTO.In;
 using PhotoGallery.BLL.DTO.Out;
-using PhotoGallery.BLL.Exceptions;
 using PhotoGallery.BLL.Interfaces;
 using PhotoGallery.DAL.Entities;
 using PhotoGallery.DAL.Interfaces;
@@ -16,21 +15,20 @@ namespace PhotoGallery.BLL.Services
     {
         IMapper mapper;
         IUnitOfWork unitOfWork;
+        IServiceHelper helper;
 
-        public CommentService(IMapper mapper, IUnitOfWork unitOfWork)
+        public CommentService(IMapper mapper, IUnitOfWork unitOfWork, IServiceHelper helper)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
+            this.helper = helper;
         }
 
         public async Task<CommentDTO> AddCommentAsync(CommentAddDTO commentAddDTO)
         {
             var photo = await unitOfWork.Photos.GetByIdAsync(commentAddDTO.PhotoId);
 
-            if (photo == null)
-            {
-                throw new PhotoGalleryNotFoundException("Photo was not found");
-            }
+            helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(photo);
 
             var comment = mapper.Map<Comment>(commentAddDTO);            
 
@@ -46,10 +44,7 @@ namespace PhotoGallery.BLL.Services
         {
             var comment = await unitOfWork.Comments.GetByIdAsync(commentId);
 
-            if (comment == null)
-            {
-                throw new PhotoGalleryNotFoundException("Comment was not found");
-            }
+            helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(comment);
 
             var commentDTO = mapper.Map<CommentDTO>(comment);
 
@@ -67,15 +62,8 @@ namespace PhotoGallery.BLL.Services
         {
             var comment = await unitOfWork.Comments.GetByIdAsync(commentId);
 
-            if (comment == null)
-            {
-                throw new PhotoGalleryNotFoundException("Comment was not found");
-            }
-
-            if (comment.UserId != userId)
-            {
-                throw new PhotoGalleryNotAllowedException("You don`t have permission to delete this comment");
-            }
+            helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(comment);
+            helper.ThrowPhotoGalleryNotAllowedExceptionIfDifferentId(comment.UserId, userId);
 
             unitOfWork.Comments.Remove(comment);
             await unitOfWork.SaveAsync();
