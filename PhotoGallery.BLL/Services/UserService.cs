@@ -35,17 +35,9 @@ namespace PhotoGallery.BLL.Services
             this.jwtSettings = jwtSettings.Value;
         }
 
-        public async Task<IEnumerable<UserDTO>> GetUsersAsync()
+        public async Task<UserDTO> GetUserAsync(int userId)
         {
-            var users = await unitOfWork.Users.GetAllAsync();
-
-            return users.Select(u => mapper.Map<UserDTO>(u, opt =>
-                opt.Items["roles"] = unitOfWork.UserManager.GetRolesAsync(u).Result.ToArray()));
-        }
-
-        public async Task<UserDTO> GetUserAsync(int id)
-        {
-            var user = await unitOfWork.Users.GetByIdAsync(id);
+            var user = await unitOfWork.Users.GetByIdAsync(userId);
             helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(user);
 
             var roles = unitOfWork.UserManager.GetRolesAsync(user).Result.ToArray();
@@ -63,6 +55,14 @@ namespace PhotoGallery.BLL.Services
             return mapper.Map<UserDTO>(user, opt => opt.Items["roles"] = roles);
         }
 
+        public async Task<IEnumerable<UserDTO>> GetUsersAsync()
+        {
+            var users = await unitOfWork.Users.GetAllAsync();
+
+            return users.Select(u => mapper.Map<UserDTO>(u, opt =>
+                opt.Items["roles"] = unitOfWork.UserManager.GetRolesAsync(u).Result.ToArray()));
+        }
+
         public async Task CreateUserAsync(UserRegisterDTO userRegisterDTO)
         {
             var userByMail = await unitOfWork.UserManager.FindByEmailAsync(userRegisterDTO.Email);
@@ -71,11 +71,7 @@ namespace PhotoGallery.BLL.Services
             var userByName = await unitOfWork.UserManager.FindByNameAsync(userRegisterDTO.UserName);
             helper.ThrowPhotoGalleryFailedRegisterExceptionIfModelIsNotNull(userByName, "User with this username already exists");
 
-            var user = new User
-            {
-                UserName = userRegisterDTO.UserName,
-                Email = userRegisterDTO.Email
-            };
+            var user = mapper.Map<User>(userRegisterDTO);
 
             await unitOfWork.UserManager.CreateAsync(user, userRegisterDTO.Password);
             await unitOfWork.UserManager.AddToRoleAsync(user, "User");
@@ -99,11 +95,11 @@ namespace PhotoGallery.BLL.Services
             helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(user);
 
             // Delete user`s likes before deleting user account
-            IEnumerable<Like> userLikes = await unitOfWork.Likes.Find(like => like.UserId == userId);
+            IEnumerable<Like> userLikes = await unitOfWork.Likes.FindAsync(like => like.UserId == userId);
             unitOfWork.Likes.RemoveRange(userLikes);
 
             // Delete user`s comments before deleting user account
-            IEnumerable<Comment> userComments = await unitOfWork.Comments.Find(comment => comment.UserId == userId);
+            IEnumerable<Comment> userComments = await unitOfWork.Comments.FindAsync(comment => comment.UserId == userId);
             unitOfWork.Comments.RemoveRange(userComments);
 
             await unitOfWork.UserManager.DeleteAsync(user);

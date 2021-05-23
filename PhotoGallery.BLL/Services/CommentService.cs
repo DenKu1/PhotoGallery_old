@@ -53,7 +53,7 @@ namespace PhotoGallery.BLL.Services
 
         public async Task<IEnumerable<CommentDTO>> GetCommentsAsync(int photoId)
         {
-            var comments = await unitOfWork.Comments.Find(c => c.PhotoId == photoId);
+            var comments = await unitOfWork.Comments.FindAsync(c => c.PhotoId == photoId);
 
             return mapper.Map<IEnumerable<CommentDTO>>(comments);
         }

@@ -29,7 +29,7 @@ namespace PhotoGallery.DAL.Repositories
             await context.Set<TEntity>().AddRangeAsync(entities);
         }
 
-        public async Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> expression)
+        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression)
         {
             return await context.Set<TEntity>().Where(expression).ToListAsync();
         }

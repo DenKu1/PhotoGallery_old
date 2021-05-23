@@ -7,9 +7,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoGallery.DAL", "PhotoGa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoGallery.BLL", "PhotoGallery.BLL\PhotoGallery.BLL.csproj", "{022B75CA-0784-4B67-8389-2554CD512777}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoGallery.WEB", "PhotoGallery.WEB\PhotoGallery.WEB.csproj", "{737E08C2-1331-463D-9A5A-B8BB4CF1BC49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoGallery.API", "PhotoGallery.API\PhotoGallery.API.csproj", "{737E08C2-1331-463D-9A5A-B8BB4CF1BC49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoGallery.Tests", "PhotoGallery.Tests\PhotoGallery.Tests.csproj", "{C5D1663E-D91F-46DD-B080-EB32742A63A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoGallery.Tests", "PhotoGallery.Tests\PhotoGallery.Tests.csproj", "{C5D1663E-D91F-46DD-B080-EB32742A63A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{943AB3D7-2817-48A3-9362-EF4BEFA55552}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoGallery.IntegrationTests", "PhotoGallery.IntegrationTests\PhotoGallery.IntegrationTests.csproj", "{21ED29AB-C175-49D8-9139-AF92138C1247}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{A40E90FB-9917-4872-B921-7CE6338C3DFF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8193D44E-2F31-4855-A85C-AB71DBBF871F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +44,20 @@ Global
 		{C5D1663E-D91F-46DD-B080-EB32742A63A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5D1663E-D91F-46DD-B080-EB32742A63A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5D1663E-D91F-46DD-B080-EB32742A63A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21ED29AB-C175-49D8-9139-AF92138C1247}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21ED29AB-C175-49D8-9139-AF92138C1247}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21ED29AB-C175-49D8-9139-AF92138C1247}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21ED29AB-C175-49D8-9139-AF92138C1247}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2807B92E-77B5-4D61-AD8C-5E183106FE07} = {A40E90FB-9917-4872-B921-7CE6338C3DFF}
+		{022B75CA-0784-4B67-8389-2554CD512777} = {A40E90FB-9917-4872-B921-7CE6338C3DFF}
+		{737E08C2-1331-463D-9A5A-B8BB4CF1BC49} = {A40E90FB-9917-4872-B921-7CE6338C3DFF}
+		{C5D1663E-D91F-46DD-B080-EB32742A63A8} = {8193D44E-2F31-4855-A85C-AB71DBBF871F}
+		{21ED29AB-C175-49D8-9139-AF92138C1247} = {8193D44E-2F31-4855-A85C-AB71DBBF871F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {51594C19-476D-4190-9913-D17E8F306D2F}

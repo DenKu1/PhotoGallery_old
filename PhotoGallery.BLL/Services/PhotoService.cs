@@ -56,7 +56,7 @@ namespace PhotoGallery.BLL.Services
 
         public async Task<IEnumerable<PhotoDTO>> GetPhotosAsync(int albumId)
         {
-            var photos = await unitOfWork.Photos.Find(p => p.AlbumId == albumId);
+            var photos = await unitOfWork.Photos.FindAsync(p => p.AlbumId == albumId);
 
             return mapper.Map<IEnumerable<PhotoDTO>>(photos);
         }
@@ -83,7 +83,7 @@ namespace PhotoGallery.BLL.Services
             helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(photo);
             helper.ThrowPhotoGalleryNotAllowedExceptionIfDifferentId(photo.Album.UserId, photoDTO.UserId);
 
-            photo.Name = photoDTO.Name;
+            mapper.Map(photoDTO, photo);
 
             unitOfWork.Photos.Update(photo);
             await unitOfWork.SaveAsync();

@@ -15,11 +15,17 @@ namespace PhotoGallery.BLL.Configuration.Automapper
         {
             CreateMap<AlbumAddDTO, Album>()
                 .ForMember(x => x.Created, opt => opt.MapFrom((_, _, _, context) => (DateTime)context.Items["creationTime"]))
-                .ForMember(x => x.Updated, opt => opt.MapFrom((_, _, _, context) => (DateTime)context.Items["creationTime"]));            
+                .ForMember(x => x.Updated, opt => opt.MapFrom((_, _, _, context) => (DateTime)context.Items["creationTime"]));
+            CreateMap<AlbumUpdateDTO, Album>()
+                .ForMember(x => x.Updated, opt => opt.MapFrom((_, _, _, context) => (DateTime)context.Items["creationTime"]))
+                .ForMember(x => x.Id, opt => opt.Ignore())
+                .ForMember(x => x.UserId, opt => opt.Ignore());
             CreateMap<CommentAddDTO, Comment>();            
             CreateMap<PhotoAddDTO, Photo>()
                 .ForMember(x => x.Created, opt => opt.MapFrom((_, _, _, context) => (DateTime)context.Items["creationTime"]));
-
+            CreateMap<PhotoUpdateDTO, Photo>()
+                .ForMember(x => x.Id, opt => opt.Ignore());
+            CreateMap<UserRegisterDTO, User>();
             CreateMap<Comment, CommentDTO>()
                 .ForMember(x => x.UserName, opt => opt.MapFrom(x => x.User.UserName));            
             CreateMap<Album, AlbumDTO>();            
