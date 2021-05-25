@@ -12,43 +12,43 @@ using PhotoGallery.IntegrationTests.Utilities;
 
 namespace PhotoGallery.IntegrationTests.EndpointTests
 {
-    public class AlbumIntergationTests : IClassFixture<IntegrationTestsFixture>
+    public class CommentIntergationTests : IClassFixture<IntegrationTestsFixture>
     {
         IntegrationTestsFixture fixture;
 
-        public AlbumIntergationTests(IntegrationTestsFixture fixture)
+        public CommentIntergationTests(IntegrationTestsFixture fixture)
         {
             this.fixture = fixture;
         }
 
         [Fact]
-        public async Task GetAlbums_Should_ReturnAlbumModels()
+        public async Task GetComments_Should_ReturnCommentModels()
         {
-            var userId = -1;
-            var requestUri = $"api/users/{userId}/albums";
+            var photoId = 1;
+            var requestUri = $"api/photos/{photoId}/comments";
 
             var response = await fixture.client.GetAsync(requestUri);
-            
+
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var albums = await response.DeserializeAsync<IEnumerable<AlbumModel>>();          
+            var comments = await response.DeserializeAsync<IEnumerable<CommentModel>>();
 
-            albums.Count().Should().Be(2);
+            comments.Count().Should().Be(3);
         }
 
         [Fact]
-        public async Task GetAlbum_Should_ReturnAlbumModel()
+        public async Task GetComment_Should_ReturnAlbumModel()
         {
-            var albumId = 1;
-            var requestUri = $"api/albums/{albumId}";
+            var commentId = 1;
+            var requestUri = $"api/comments/{commentId}";
 
             var response = await fixture.client.GetAsync(requestUri);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var album = await response.DeserializeAsync<AlbumModel>();
+            var comment = await response.DeserializeAsync<AlbumModel>();
 
-            album.Id.Should().Be(albumId);
+            comment.Id.Should().Be(commentId);
         }
-    }    
+    }
 }

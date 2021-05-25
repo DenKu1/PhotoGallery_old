@@ -4,7 +4,7 @@ using PhotoGallery.BLL.Configuration.Automapper;
 
 namespace PhotoGallery.Tests.ServiceTests.Base
 {
-    public class ServiceTestsBase
+    public abstract class ServiceTestsBase
     {
         protected Mapper CreateMapperProfile()
         {

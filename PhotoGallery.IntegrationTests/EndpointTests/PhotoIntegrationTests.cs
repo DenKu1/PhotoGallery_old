@@ -12,43 +12,43 @@ using PhotoGallery.IntegrationTests.Utilities;
 
 namespace PhotoGallery.IntegrationTests.EndpointTests
 {
-    public class AlbumIntergationTests : IClassFixture<IntegrationTestsFixture>
+    public class PhotoIntergationTests : IClassFixture<IntegrationTestsFixture>
     {
         IntegrationTestsFixture fixture;
 
-        public AlbumIntergationTests(IntegrationTestsFixture fixture)
+        public PhotoIntergationTests(IntegrationTestsFixture fixture)
         {
             this.fixture = fixture;
         }
 
         [Fact]
-        public async Task GetAlbums_Should_ReturnAlbumModels()
+        public async Task GetPhotos_Should_ReturnPhotoModels()
         {
-            var userId = -1;
-            var requestUri = $"api/users/{userId}/albums";
+            var albumId = 1;
+            var requestUri = $"api/albums/{albumId}/photos";
 
             var response = await fixture.client.GetAsync(requestUri);
-            
+
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var albums = await response.DeserializeAsync<IEnumerable<AlbumModel>>();          
+            var photos = await response.DeserializeAsync<IEnumerable<PhotoModel>>();
 
-            albums.Count().Should().Be(2);
+            photos.Count().Should().Be(2);
         }
 
         [Fact]
-        public async Task GetAlbum_Should_ReturnAlbumModel()
+        public async Task GetPhoto_Should_ReturnAlbumModel()
         {
-            var albumId = 1;
-            var requestUri = $"api/albums/{albumId}";
+            var photoId = 1;
+            var requestUri = $"api/photos/{photoId}";
 
             var response = await fixture.client.GetAsync(requestUri);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var album = await response.DeserializeAsync<AlbumModel>();
+            var photo = await response.DeserializeAsync<PhotoModel>();
 
-            album.Id.Should().Be(albumId);
+            photo.Id.Should().Be(photoId);
         }
-    }    
+    }
 }

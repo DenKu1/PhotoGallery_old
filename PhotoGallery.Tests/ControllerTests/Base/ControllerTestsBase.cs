@@ -9,7 +9,7 @@ using PhotoGallery.API.Configuration.Automapper;
 
 namespace PhotoGallery.Tests.ControllerTests.Base
 {
-    public class ControllerTestsBase
+    public abstract class ControllerTestsBase
     {
         protected Mapper CreateMapperProfile()
         {
