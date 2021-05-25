@@ -6,11 +6,11 @@ Also user can view, comment and rate other users' photos. Search for photos.
 Adminisitrator can manage users and their content.
 
 ## Backend part: 
-* 3-layer architecture with low coupled DAL, BLL, WEB
-* Database - Entity Framework Code first
+* 3-layer architecture with low coupled DAL, BLL, PL (API)
+* ORM Entity Framework
 * Repository and Unit Of Work patterns
-* Identity authentication
-* REST Web API
+* Authentication Identity Core 
+* ASP.NET Core REST API
 * Automapper
 * .NET Core DI
 
@@ -19,7 +19,7 @@ Adminisitrator can manage users and their content.
 * Bootstrap 4
 * Awesome icons
 
-## Testing (xUnit):
+## Testing (xUnit, Moq, FluentAssertions):
 * Unit tests
 * Integration tests
 
