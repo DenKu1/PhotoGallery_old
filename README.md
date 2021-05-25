@@ -9,8 +9,8 @@ Adminisitrator can manage users and their content.
 * 3-layer architecture with low coupled DAL, BLL, WEB
 * Database - Entity Framework Code first
 * Repository and Unit Of Work patterns
-* Identity authentication
-* REST Web API
+* Authentication Identity Core 
+* ASP.NET Core REST API
 * Automapper
 * .NET Core DI
 
