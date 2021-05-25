@@ -11,11 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoGallery.API", "PhotoGa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoGallery.Tests", "PhotoGallery.Tests\PhotoGallery.Tests.csproj", "{C5D1663E-D91F-46DD-B080-EB32742A63A8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{943AB3D7-2817-48A3-9362-EF4BEFA55552}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoGallery.IntegrationTests", "PhotoGallery.IntegrationTests\PhotoGallery.IntegrationTests.csproj", "{21ED29AB-C175-49D8-9139-AF92138C1247}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{A40E90FB-9917-4872-B921-7CE6338C3DFF}"
