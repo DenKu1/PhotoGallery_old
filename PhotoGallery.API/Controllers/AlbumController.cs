@@ -30,7 +30,7 @@ namespace PhotoGallery.API.Controllers
 
         [HttpGet]
         [Route("api/users/{userId}/albums")]
-        [AllowAnonymous]//[Authorize(Roles = "User")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<IEnumerable<AlbumModel>>> GetAlbums([FromRoute] int userId)
         {
             var albumDTOs = await albumService.GetAlbumsAsync(userId);
@@ -40,7 +40,7 @@ namespace PhotoGallery.API.Controllers
 
         [HttpGet]
         [Route("api/albums/{albumId}")]
-        [AllowAnonymous]//[Authorize(Roles = "User")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<AlbumModel>> GetAlbum([FromRoute] int albumId)
         {
             var albumDTO = await albumService.GetAlbumAsync(albumId);

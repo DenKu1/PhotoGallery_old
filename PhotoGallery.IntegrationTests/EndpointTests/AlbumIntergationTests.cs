@@ -18,14 +18,13 @@ namespace PhotoGallery.IntegrationTests.EndpointTests
 
         public AlbumIntergationTests(IntegrationTestsFixture fixture)
         {
-            this.fixture = fixture;
+            this.fixture = fixture;     
         }
 
         [Fact]
         public async Task GetAlbums_Should_ReturnAlbumModels()
         {
-            var userId = -1;
-            var requestUri = $"api/users/{userId}/albums";
+            var requestUri = $"api/users/{fixture.user.Id}/albums";
 
             var response = await fixture.client.GetAsync(requestUri);
             

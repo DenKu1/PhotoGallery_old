@@ -31,7 +31,7 @@ namespace PhotoGallery.API.Controllers
 
         [HttpGet]
         [Route("api/photos/{photoId}/comments")]
-        [AllowAnonymous]//[Authorize(Roles = "User")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<IEnumerable<CommentModel>>> GetComments([FromRoute] int photoId)
         {
             var commentDTOs = await commentService.GetCommentsAsync(photoId);
@@ -41,7 +41,7 @@ namespace PhotoGallery.API.Controllers
 
         [HttpGet]
         [Route("api/comments/{commentId}")]
-        [AllowAnonymous]//[Authorize(Roles = "User")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<CommentModel>> GetComment([FromRoute] int commentId)
         {
             var commentDTO = await commentService.GetCommentAsync(commentId);

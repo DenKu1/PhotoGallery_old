@@ -14,6 +14,7 @@ namespace PhotoGallery.DAL.EF
 
         public GalleryContext(DbContextOptions<GalleryContext> options) : base(options)
         {
+            Database.EnsureCreated(); //TODO: Check this
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

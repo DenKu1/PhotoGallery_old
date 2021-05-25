@@ -38,7 +38,7 @@ namespace PhotoGallery.IntegrationTests.Utilities
 
         private void SeedData(GalleryContext context)
         {
-            var userId = -1;
+            var userId = TestUser.Id;
 
             var album1 = new Album { Name = "album1", Description = "desc1", Created = DateTime.Now.AddDays(-1), Updated = DateTime.Now, UserId = userId, };
             var album2 = new Album { Name = "album2", Description = "desc2", Created = DateTime.Now.AddDays(-1), Updated = DateTime.Now, UserId = userId, };
