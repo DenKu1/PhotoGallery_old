@@ -54,11 +54,11 @@ namespace PhotoGallery.BLL.Services
             return mapper.Map<PhotoDTO>(photo);
         }
 
-        public async Task<IEnumerable<PhotoDTO>> GetPhotosAsync(int albumId)
+        public async Task<IEnumerable<PhotoDTO>> GetPhotosAsync(int albumId, int userId)
         {
             var photos = await unitOfWork.Photos.FindAsync(p => p.AlbumId == albumId);
 
-            return mapper.Map<IEnumerable<PhotoDTO>>(photos);
+            return mapper.Map<IEnumerable<PhotoDTO>>(photos, opt => opt.Items["userId"] = userId);
         }
 
         public async Task RemovePhotoAsync(int photoId, int userId)

@@ -38,10 +38,10 @@ namespace PhotoGallery.Tests.ControllerTests
         [Fact]
         public void GetPhotos_Should_ReturnPhotoModels()
         {
-            var photoId = 1;
+            var albumId = 1;
             var photoDTOs = new List<PhotoDTO> { new PhotoDTO { Name = "name", Path = "path" } };
 
-            mockService.Setup(s => s.GetPhotosAsync(photoId)).ReturnsAsync(photoDTOs).Verifiable();
+            mockService.Setup(s => s.GetPhotosAsync(userId, albumId)).ReturnsAsync(photoDTOs).Verifiable();
 
             controller.GetPhotos(userId).Result.Result.Should().BeOfType<OkObjectResult>()
                 .Which.Value.Should().BeEquivalentTo(photoDTOs);

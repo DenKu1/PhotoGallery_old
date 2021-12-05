@@ -33,7 +33,7 @@ namespace PhotoGallery.API.Controllers
         [Authorize(Roles = "User")]
         public async Task<ActionResult<IEnumerable<PhotoModel>>> GetPhotos([FromRoute] int albumId)
         {
-            var photoDTOs = await photoService.GetPhotosAsync(albumId);
+            var photoDTOs = await photoService.GetPhotosAsync(albumId, UserId);
 
             return Ok(mapper.Map<IEnumerable<PhotoModel>>(photoDTOs));
         }

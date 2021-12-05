@@ -10,7 +10,7 @@ namespace PhotoGallery.BLL.Interfaces
     {
         Task<PhotoDTO> AddPhotoAsync(PhotoAddDTO photoDTO);
         Task<PhotoDTO> GetPhotoAsync(int photoId);
-        Task<IEnumerable<PhotoDTO>> GetPhotosAsync(int albumId);
+        Task<IEnumerable<PhotoDTO>> GetPhotosAsync(int albumId, int userId);
         Task LikePhotoAsync(int photoId, int userId);
         Task RemovePhotoAsync(int photoId, int userId);
         Task UpdatePhotoAsync(PhotoUpdateDTO photoDTO);

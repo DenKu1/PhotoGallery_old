@@ -148,11 +148,12 @@ namespace PhotoGallery.Tests.ServiceTests
         public async Task GetPhotosAsync_Should_ReturnPhotoDTOs()
         {
             var albumId = 1;
+            var userId = 1;
             var photos = new List<Photo> { new Photo { Name = "name", Path = "path" } };
 
             mockUow.Setup(uow => uow.Photos.FindAsync(It.IsAny<Expression<Func<Photo, bool>>>())).ReturnsAsync(photos);
 
-            var result = await service.GetPhotosAsync(albumId);
+            var result = await service.GetPhotosAsync(albumId, userId);
 
             result.Should().BeEquivalentTo(photos, options => options.ExcludingMissingMembers()
                 .Excluding(p => p.Likes));
