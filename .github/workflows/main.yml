@@ -27,4 +27,4 @@ jobs:
         run: dotnet build -c Release --no-restore
 
       - name: Run automated tests 🧪
-        run: dotnet test "./PhotoGallery.Tests/PhotoGallery.Tests.csproj" -c Release --blame
+        run: dotnet build -c Release --no-restore
