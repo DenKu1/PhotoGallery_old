@@ -1,4 +1,4 @@
-# PhotoGallery
+# PhotoGallery ![](https://github.com/DenKu1/PhotoGallery_old/workflows/main.yml/badge.svg)
 Online photo gallery is a .NET Core web-application.
 
 It allows user to register and login, creating albums and uploading photos to them.
