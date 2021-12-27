@@ -16,6 +16,7 @@ namespace PhotoGallery.API.Configuration.DI
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITagService, TagService>();
 
             return services;
         }

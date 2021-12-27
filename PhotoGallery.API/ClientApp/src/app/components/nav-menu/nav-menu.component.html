@@ -28,12 +28,13 @@
       <li *ngIf="currentUser" class="nav-item dropdown">
         <div class="navbar-text dropdown-toggle" id="navbardrop" data-toggle="dropdown">Account: {{currentUser.userName}}</div>
         <div class="dropdown-menu dropdown-menu-right">
+          <button (click)="profile()" class="dropdown-item">Profile</button>
           <button (click)="logout()" class="dropdown-item">Logout</button>
         </div>
       </li>
       <li *ngIf="!currentUser" class="nav-item">
         <a [routerLink]="['/users/login']" class="nav-link">Login here</a>
-      </li>      
+      </li>
     </ul>
   </div>
 </nav>

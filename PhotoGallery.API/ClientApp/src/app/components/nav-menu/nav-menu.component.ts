@@ -30,6 +30,10 @@ export class NavMenuComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  profile() {
+    this.router.navigate(['/profile']);
+  }
+
   logout() {
     this.userService.logout();
     this.router.navigate(['/users/login']);

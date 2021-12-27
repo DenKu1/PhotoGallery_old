@@ -1,0 +1,48 @@
+<div class="container">
+  <table class="table table-light table-hover">
+    <thead>
+      <tr class="thead-light">
+        <th>Id</th>
+        <th>UserName</th>
+        <th>Email</th>
+        <th>Roles</th>
+        <th>Tags</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{currentUser.id}}</td>
+        <td><a [routerLink]="['/users', currentUser.id, 'albums']">{{currentUser.userName}}</a></td>
+        <td>{{currentUser.email}}</td>
+        <td><span *ngFor="let role of currentUser.roles">{{role}}<br></span></td>
+        <td>
+
+
+        <div class="container">
+        <div class="badge">
+        <form [formGroup]="crTagInfo.form" (submit)="attachUserTag()">
+        <div class="input-group mb-3">
+        <input type="text" class="form-control-sm" formControlName="name" placeholder="Add tag.."/>
+        <div class="input-group-append">
+        <button class="btn btn-sm btn-primary" type="submit" [disabled]="crTagInfo.loading" >
+        <span *ngIf="crTagInfo.loading" class="spinner-border spinner-border-sm mr-1"></span>
+        <span *ngIf="!crTagInfo.loading">+</span>
+        </button>
+        </div>
+        </div>
+        </form>
+        </div>
+        <div class="badge" *ngFor="let tag of currentUser.tags">
+        <div class="input-group mb-3">
+        <span class="input-group-text">
+        #{{tag}}
+        <button class="btn btn-sm btn-primary close my-close my-close-small ml-1" (click)="detachUserTag(tag)">x</button>
+        </span>
+        </div>
+        </div>
+        </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

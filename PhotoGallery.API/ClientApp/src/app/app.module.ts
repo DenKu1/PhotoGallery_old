@@ -17,6 +17,7 @@ import { UserLoginComponent } from './components/user-login/user-login.component
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { HomeComponent } from './components/home/home.component';
 import { UserManagerComponent } from './components/user-manager/user-manager.component';
+import {UserProfileComponent} from "./components/user-profile/user-profile.component";
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { UserManagerComponent } from './components/user-manager/user-manager.com
     UserLoginComponent,
     NotFoundComponent,
     HomeComponent,
-    UserManagerComponent
+    UserManagerComponent,
+    UserProfileComponent
   ],
   imports: [
     BrowserModule,

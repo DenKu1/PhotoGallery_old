@@ -21,11 +21,13 @@ namespace PhotoGallery.API.Controllers
     {
         IMapper mapper;
         IUserService userService;
+        ITagService tagService;
 
-        public UserController(IMapper mapper, IUserService userService)
+        public UserController(IMapper mapper, IUserService userService, ITagService tagService)
         {
             this.mapper = mapper;
             this.userService = userService;
+            this.tagService = tagService;
         }
 
         [HttpGet]
@@ -83,6 +85,26 @@ namespace PhotoGallery.API.Controllers
 
             return Ok(mapper.Map<UserWithTokenModel>(userWithTokenDTO));
         }
+        
+        [HttpPost]
+        [Route("api/users/{userId}/attachTags")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult> AttachUserTags([FromRoute] int userId, [FromBody] IEnumerable<string> tags)
+        {
+            await tagService.AddTagsToUserAsync(tags, userId);
+
+            return Ok();
+        }
+        
+        [HttpPost]
+        [Route("api/users/{userId}/detachTag")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult> DetachUserTag([FromRoute] int userId, [FromBody] string tag)
+        {
+            await tagService.RemoveTagFromUserAsync(tag, userId);
+
+            return Ok();
+        }
 
         [HttpDelete]
         [Route("api/users/{userId}")]
@@ -93,6 +115,5 @@ namespace PhotoGallery.API.Controllers
 
             return Ok();
         }
-
     }
 }

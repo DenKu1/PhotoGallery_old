@@ -21,11 +21,13 @@ namespace PhotoGallery.API.Controllers
     {
         IMapper mapper;
         IPhotoService photoService;
+        ITagService tagService;
 
-        public PhotoController(IMapper mapper, IPhotoService photoService)
+        public PhotoController(IMapper mapper, IPhotoService photoService, ITagService tagService)
         {
             this.mapper = mapper;
             this.photoService = photoService;
+            this.tagService = tagService;
         }
 
         [HttpGet]
@@ -34,6 +36,16 @@ namespace PhotoGallery.API.Controllers
         public async Task<ActionResult<IEnumerable<PhotoModel>>> GetPhotos([FromRoute] int albumId)
         {
             var photoDTOs = await photoService.GetPhotosAsync(albumId, UserId);
+
+            return Ok(mapper.Map<IEnumerable<PhotoModel>>(photoDTOs));
+        }
+        
+        [HttpGet]
+        [Route("api/photosByTags")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<IEnumerable<PhotoModel>>> GetProposedPhotos([FromQuery] string[] tags)
+        {
+            var photoDTOs = await photoService.GetPhotosByTagsAsync(tags, 10);
 
             return Ok(mapper.Map<IEnumerable<PhotoModel>>(photoDTOs));
         }
@@ -66,6 +78,26 @@ namespace PhotoGallery.API.Controllers
         public async Task<ActionResult> LikePhoto([FromRoute] int photoId)
         {
             await photoService.LikePhotoAsync(photoId, UserId);
+
+            return Ok();
+        }
+        
+        [HttpPost]
+        [Route("api/photos/{photoId}/attachTags")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult> AttachPhotoTags([FromRoute] int photoId, [FromBody] IEnumerable<string> tags)
+        {
+            await tagService.AddTagsToPhotoAsync(tags, photoId);
+
+            return Ok();
+        }
+        
+        [HttpPost]
+        [Route("api/photos/{photoId}/detachTag")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult> DetachPhotoTag([FromRoute] int photoId, [FromBody] string tag)
+        {
+            await tagService.RemoveTagFromPhotoAsync(tag, photoId);
 
             return Ok();
         }

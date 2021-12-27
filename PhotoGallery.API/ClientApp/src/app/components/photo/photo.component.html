@@ -38,6 +38,29 @@
                 <!--Button to open photo update modal-->
                 <button *ngIf="isOwned" type="button" class="form__button" (click)="upInfo.initialize(photo)" data-toggle="modal" data-target="#updatePhotoModal"><i class="fas fa-edit"></i></button>
                 <p class="font-weight-light">{{photo.created | date}}</p>
+                <div class="container">
+                  <div class="badge" *ngIf="isOwned">
+                    <form [formGroup]="crTagInfos[i].form" (submit)="attachPhotoTag(photo, i)">
+                        <div class="input-group mb-3">
+                          <input type="text" class="form-control-sm" formControlName="name" placeholder="Add tag.."/>
+                          <div class="input-group-append">
+                            <button class="btn btn-sm btn-primary" type="submit" [disabled]="crTagInfos[i].loading" >
+                              <span *ngIf="crTagInfos[i].loading" class="spinner-border spinner-border-sm mr-1"></span>
+                              <span *ngIf="!crTagInfos[i].loading">+</span>
+                            </button>
+                          </div>
+                        </div>
+                    </form>
+                  </div>
+                  <div class="badge" *ngFor="let tag of photo.tags">
+                    <div class="input-group mb-3">
+                      <span class="input-group-text">
+                        #{{tag}}
+                        <button class="btn btn-sm btn-primary close my-close my-close-small ml-1" *ngIf="isOwned" (click)="detachPhotoTag(photo, tag)">x</button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="card-body">
                 <img class="img-fluid my-image" src="{{photo.path}}" alt="{{photo.name}}">
@@ -68,8 +91,9 @@
                   <div class="form__group field d-flex">
                     <input type="text" class="form__field" formControlName="text" id={{photo.id}}>
                     <label class="form__label" for={{photo.id}}>Add comment</label>
-                    <button type="submit" [disabled]="loading" class="form__button">
-                      <span *ngIf="crCommentInfos[i].loading" class="spinner-border spinner-border-sm mr-1"></span>Post
+                    <button type="submit" [disabled]="crCommentInfos[i].loading" class="form__button">
+                      <span *ngIf="crCommentInfos[i].loading" class="spinner-border spinner-border-sm mr-1"></span>
+                      <span *ngIf="!crCommentInfos[i].loading">Post</span>
                     </button>
                   </div>
                   <div *ngIf="crCommentInfos[i].submitted && crCommentInfos[i].f.text.errors" class="text-danger">
@@ -123,7 +147,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" [disabled]="loading || !crInfo.form.touched" class="btn btn-success px-3">
+          <button type="submit" [disabled]="crInfo.loading || !crInfo.form.touched" class="btn btn-success px-3">
             <span *ngIf="crInfo.loading" class="spinner-border spinner-border-sm mr-1"></span>Add
           </button>
           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -161,7 +185,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" [disabled]="loading || !upInfo.form.touched" class="btn btn-primary px-3">
+          <button type="submit" [disabled]="upInfo.loading || !upInfo.form.touched" class="btn btn-primary px-3">
             <span *ngIf="upInfo.loading" class="spinner-border spinner-border-sm mr-1"></span>Edit
           </button>
           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>

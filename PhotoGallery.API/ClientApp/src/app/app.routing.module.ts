@@ -11,11 +11,16 @@ import { HomeComponent } from './components/home/home.component';
 
 import { AuthGuard } from './helpers/auth.guard';
 import { UserManagerComponent } from './components/user-manager/user-manager.component';
+import { UserProfileComponent } from "./components/user-profile/user-profile.component";
 
 const routes: Routes = [
   {
     path: '',
     component: HomeComponent
+  },
+  {
+    path: 'profile',
+    component: UserProfileComponent
   },
   {
     path: 'users/register',

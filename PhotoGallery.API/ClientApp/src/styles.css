@@ -21,6 +21,11 @@ body {
   color: red;
 }
 
+  .my-close-small {
+    font-size: unset;
+    color: #16326b;
+  }
+
 .my-photo-at {
   background-color: transparent;
   font-size: 2rem;

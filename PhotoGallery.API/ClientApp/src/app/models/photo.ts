@@ -9,4 +9,5 @@ export class Photo {
   likes: number;
   isLiked: boolean;
   comments: Comment[];
+  tags: string[];
 }

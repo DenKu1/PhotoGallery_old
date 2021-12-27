@@ -28,6 +28,8 @@ export class PhotoComponent implements OnInit {
   upInfo: UpdatePhotoInfo;
 
   crCommentInfos: CreateCommentInfo[];
+  crTagInfos: CreateTagInfo[];
+
 
   searchPhotoForm: FormControl;
 
@@ -50,8 +52,6 @@ export class PhotoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
-    
     this.getCurrentUser();
     this.getAlbum();
     this.getPhotos();
@@ -79,6 +79,7 @@ export class PhotoComponent implements OnInit {
         {
           this.photos = photos;
           this.crCommentInfos = photos.map(p => new CreateCommentInfo(this.formBuilder, p.id));
+          this.crTagInfos = photos.map(p => new CreateTagInfo(this.formBuilder, p.id));
         });
   }
 
@@ -101,6 +102,7 @@ export class PhotoComponent implements OnInit {
         photo => {
           this.photos.push(photo);
           this.crCommentInfos.push(new CreateCommentInfo(this.formBuilder, photo.id));
+          this.crTagInfos.push(new CreateTagInfo(this.formBuilder, photo.id));
 
           this.crInfo.success = "Created successfully";
           this.crInfo.form.markAsUntouched();
@@ -131,7 +133,7 @@ export class PhotoComponent implements OnInit {
         () => {
           let currentPhoto = this.photos.find(p => p.id === this.upInfo.f.id.value);
 
-          currentPhoto.name = this.upInfo.f.name.value;        
+          currentPhoto.name = this.upInfo.f.name.value;
 
           this.upInfo.success = "Updated successfully";
           this.upInfo.form.markAsUntouched();
@@ -151,6 +153,7 @@ export class PhotoComponent implements OnInit {
         () => {
           this.photos.splice(index, 1);
           this.crCommentInfos.splice(index, 1);
+          this.crTagInfos.splice(index, 1);
         },
         err => {
           console.log("Can`t delete photo! Unknown error");
@@ -162,7 +165,7 @@ export class PhotoComponent implements OnInit {
       .pipe(first())
       .subscribe(
         () => {
-          
+
           if (photo.isLiked) {
             photo.likes--;
           }
@@ -177,7 +180,49 @@ export class PhotoComponent implements OnInit {
         });
   }
 
-  searchPhoto() {
+  attachPhotoTag(photo: Photo, i: number): void {
+    let info: CreateTagInfo = this.crTagInfos[i];
+
+    info.submitted = true;
+    info.error = '';
+
+    if (info.form.invalid) {
+      return;
+    }
+
+    info.loading = true;
+    this.photoService.attachPhotoTags(
+      info.f.photoId.value,
+      [info.f.name.value]
+    )
+      .pipe(first())
+      .subscribe(
+        x => {
+          if (!this.photos[i].tags.includes(info.f.name.value)){
+            this.photos[i].tags.push(info.f.name.value);
+          }
+
+          info.loading = false;
+        },
+        err => {
+          info.error = "Unknown error! Please try again";
+          info.loading = false;
+        });
+  }
+
+  detachPhotoTag(photo: Photo, tag: string): void {
+    this.photoService.detachPhotoTag(photo.id, tag)
+      .pipe(first())
+      .subscribe(
+        () => {
+          photo.tags.splice(photo.tags.indexOf(tag), 1);
+        },
+        err => {
+          console.log("Can`t detach tag! Unknown error");
+        });
+  }
+
+  searchPhoto(): void {
 
     if (this.searchPhotoForm.invalid) {
       return;
@@ -227,7 +272,7 @@ export class PhotoComponent implements OnInit {
       .subscribe(
         comment => {
           if (this.photos[i].comments) {
-            this.photos[i].comments.push(comment);            
+            this.photos[i].comments.push(comment);
           }
           else
           {
@@ -287,7 +332,7 @@ class UpdatePhotoInfo {
   constructor(private formBuilder: FormBuilder) {
     this.form = this.formBuilder.group({
       id: ['', [Validators.required]],
-      name: ['', [Validators.required, Validators.maxLength(50)]]     
+      name: ['', [Validators.required, Validators.maxLength(50)]]
     });
   }
 
@@ -313,6 +358,23 @@ class CreateCommentInfo {
     this.form = this.formBuilder.group({
       photoId: [photoId, [Validators.required]],
       text: ['', [Validators.required, Validators.maxLength(200)]]
+    });
+  }
+}
+
+class CreateTagInfo {
+  loading = false;
+  submitted = false;
+  error: string = '';
+
+  form: FormGroup;
+
+  get f() { return this.form.controls; }
+
+  constructor(private formBuilder: FormBuilder, photoId: number) {
+    this.form = this.formBuilder.group({
+      photoId: [photoId, [Validators.required]],
+      name: ['', [Validators.required, Validators.maxLength(50)]]
     });
   }
 }

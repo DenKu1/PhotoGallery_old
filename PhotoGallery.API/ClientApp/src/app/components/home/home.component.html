@@ -1,8 +1,9 @@
-<div class="jumbotron text-center">
-<h3>Welcome to the website "Online photo gallery"!</h3>
-<p>
-The service provided by this site allows you to create your own photo albums and share them with other users. The site also allows you to rate and comment on other people's photos
-</p>
-<p>To get started with the "Online photo gallery", go to the "My albums" tab in the navigation menu</p>
-<p>If you have not registered yet, go to the <a [routerLink]="['/users/register']">sign up page</a></p>
+<div class="container">
+  <div class="card-columns">
+    <div class="card bg-primary" *ngFor="let photo of photos">
+      <div class="card-body text-center">
+        <img class="my-image" src="{{photo.path}}">
+      </div>
+    </div>
+  </div>
 </div>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -8,6 +8,8 @@ import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
+
+  headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
 
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
@@ -21,7 +23,7 @@ export class UserService {
     return this.currentUserSubject.value;
   }
 
-  login(userName: string, password: string) {   
+  login(userName: string, password: string) {
     return this.http.post<any>(`${environment.apiUrl}/login`, { userName, password })
       .pipe(map(user => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
@@ -55,5 +57,13 @@ export class UserService {
 
   deleteUser(id: number) {
     return this.http.delete(`${environment.apiUrl}/users/${id}`);
+  }
+
+  attachUserTags(tags: string[]) {
+    return this.http.post(`${environment.apiUrl}/users/${this.currentUserSubject.value.id}/attachTags`, tags,{headers: this.headers})
+  }
+
+  detachUserTag(tag: string) {
+    return this.http.post(`${environment.apiUrl}/users/${this.currentUserSubject.value.id}/detachTag`, `"${tag}"`,{headers: this.headers})
   }
 }
