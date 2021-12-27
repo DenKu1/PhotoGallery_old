@@ -22,16 +22,17 @@ namespace PhotoGallery.Tests.ControllerTests
 
         IMapper mapper;
 
-        Mock<IPhotoService> mockService;
+        Mock<IPhotoService> mockPhotoService;
+        Mock<ITagService> mockTagService;
 
         PhotoController controller;
 
         public PhotoControllerTests()
         {
             mapper = CreateMapperProfile();
-            mockService = new Mock<IPhotoService>();
+            mockPhotoService = new Mock<IPhotoService>();
 
-            controller = new PhotoController(mapper, mockService.Object);
+            controller = new PhotoController(mapper, mockPhotoService.Object, mockTagService.Object);
             AddIdentity(controller, userId);
         }
 
@@ -41,11 +42,11 @@ namespace PhotoGallery.Tests.ControllerTests
             var albumId = 1;
             var photoDTOs = new List<PhotoDTO> { new PhotoDTO { Name = "name", Path = "path" } };
 
-            mockService.Setup(s => s.GetPhotosAsync(userId, albumId)).ReturnsAsync(photoDTOs).Verifiable();
+            mockPhotoService.Setup(s => s.GetPhotosAsync(userId, albumId)).ReturnsAsync(photoDTOs).Verifiable();
 
             controller.GetPhotos(userId).Result.Result.Should().BeOfType<OkObjectResult>()
                 .Which.Value.Should().BeEquivalentTo(photoDTOs);
-            mockService.Verify();
+            mockPhotoService.Verify();
         }
 
         [Fact]
@@ -54,11 +55,11 @@ namespace PhotoGallery.Tests.ControllerTests
             var photoId = 1;
             var photoDTO = new PhotoDTO { Name = "name", Path = "path" };
 
-            mockService.Setup(s => s.GetPhotoAsync(photoId)).ReturnsAsync(photoDTO).Verifiable();
+            mockPhotoService.Setup(s => s.GetPhotoAsync(photoId)).ReturnsAsync(photoDTO).Verifiable();
 
             controller.GetPhoto(photoId).Result.Result.Should().BeOfType<OkObjectResult>()
                 .Which.Value.Should().BeEquivalentTo(photoDTO);
-            mockService.Verify();
+            mockPhotoService.Verify();
         }
 
         [Fact]
@@ -68,12 +69,12 @@ namespace PhotoGallery.Tests.ControllerTests
             var photoModel = new PhotoAddModel { Name = "name", Path = "path" };
             var photoDTO = new PhotoDTO { Name = "name", Path = "path" };
 
-            mockService.Setup(s => s.AddPhotoAsync(It.Is<PhotoAddDTO>(dto =>
+            mockPhotoService.Setup(s => s.AddPhotoAsync(It.Is<PhotoAddDTO>(dto =>
                 dto.Name == photoModel.Name && dto.Path == photoModel.Path))).ReturnsAsync(photoDTO).Verifiable();
 
             controller.PostPhoto(albumId, photoModel).Result.Result.Should().BeOfType<OkObjectResult>()
                 .Which.Value.Should().BeEquivalentTo(photoModel);
-            mockService.Verify();
+            mockPhotoService.Verify();
         }
 
         [Fact]
@@ -81,10 +82,10 @@ namespace PhotoGallery.Tests.ControllerTests
         {
             var photoId = 1;
 
-            mockService.Setup(s => s.LikePhotoAsync(photoId, userId)).Verifiable();
+            mockPhotoService.Setup(s => s.LikePhotoAsync(photoId, userId)).Verifiable();
 
             controller.LikePhoto(photoId).Result.Should().BeOfType<OkResult>();
-            mockService.Verify();
+            mockPhotoService.Verify();
         }
 
         [Fact]
@@ -93,11 +94,11 @@ namespace PhotoGallery.Tests.ControllerTests
             var photoId = 1;
             var photoModel = new PhotoUpdateModel { Name = "name" };
 
-            mockService.Setup(s => s.UpdatePhotoAsync(It.Is<PhotoUpdateDTO>(dto =>
+            mockPhotoService.Setup(s => s.UpdatePhotoAsync(It.Is<PhotoUpdateDTO>(dto =>
                 dto.Name == photoModel.Name))).Verifiable();
 
             controller.PutPhoto(photoId, photoModel).Result.Should().BeOfType<OkResult>();
-            mockService.Verify();
+            mockPhotoService.Verify();
         }
 
         [Fact]
@@ -105,10 +106,10 @@ namespace PhotoGallery.Tests.ControllerTests
         {
             var photoId = 1;
 
-            mockService.Setup(s => s.RemovePhotoAsync(photoId, userId)).Verifiable();
+            mockPhotoService.Setup(s => s.RemovePhotoAsync(photoId, userId)).Verifiable();
 
             controller.DeletePhoto(photoId).Result.Should().BeOfType<OkResult>();
-            mockService.Verify();
+            mockPhotoService.Verify();
         }
 
     }

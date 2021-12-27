@@ -32,12 +32,15 @@ namespace PhotoGallery.BLL.Configuration.Automapper
             CreateMap<Photo, PhotoDTO>()
                 .ForMember(x => x.Likes, opt => opt.MapFrom(x => x.Likes.Count()))
                 .ForMember(x => x.IsLiked, opt => opt.MapFrom((photo, photoDTO, _, context) =>
-                    photo.Likes.Any(like => like.UserId == (int)context.Items["userId"])));            
+                    photo.Likes.Any(like => like.UserId == (int)context.Items["userId"])))          
+                .ForMember(x => x.Tags, opt => opt.MapFrom(x => x.Tags.Select(t => t.Name)));
             CreateMap<User, UserDTO>()
-                .ForMember(x => x.Roles, opt => opt.MapFrom((_, _, _, context) => (string[])context.Items["roles"]));
+                .ForMember(x => x.Roles, opt => opt.MapFrom((_, _, _, context) => (string[])context.Items["roles"]))
+                .ForMember(x => x.Tags, opt => opt.MapFrom(x => x.Tags.Select(t => t.Name)));
             CreateMap<User, UserWithTokenDTO>()
                 .ForMember(x => x.Roles, opt => opt.MapFrom((_, _, _, context) => (string[])context.Items["roles"]))
-                .ForMember(x => x.Token, opt => opt.MapFrom((_, _, _, context) => (string)context.Items["token"]));
+                .ForMember(x => x.Token, opt => opt.MapFrom((_, _, _, context) => (string)context.Items["token"]))
+                .ForMember(x => x.Tags, opt => opt.MapFrom(x => x.Tags.Select(t => t.Name)));
         }
     }
 }

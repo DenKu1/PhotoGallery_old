@@ -60,6 +60,20 @@ namespace PhotoGallery.BLL.Services
 
             return mapper.Map<IEnumerable<PhotoDTO>>(photos, opt => opt.Items["userId"] = userId);
         }
+        
+        public async Task<IEnumerable<PhotoDTO>> GetPhotosByTagsAsync(string[] userTags, int limit)
+        {
+            var photos = await unitOfWork.Photos.FindAsync(p => true);
+            
+            var trimmedPhotos = photos.ToList().Where(p => HasCommonTags(userTags, p.Tags.Select(p=>p.Name).ToArray())).Take(limit).ToList();
+            
+            return mapper.Map<IEnumerable<PhotoDTO>>(trimmedPhotos, opt => opt.Items["userId"] = 0);
+        }
+        
+        bool HasCommonTags(string[] userTags, string[] photoTags)
+        {
+            return userTags.Intersect(photoTags).Any();
+        }
 
         public async Task RemovePhotoAsync(int photoId, int userId)
         {

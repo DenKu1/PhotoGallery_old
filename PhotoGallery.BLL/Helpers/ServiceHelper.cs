@@ -36,6 +36,5 @@ namespace PhotoGallery.BLL.Helpers
                 throw new PhotoGalleryNotFoundException(typeof(TEntity));
             }
         }
-
     }
 }

@@ -23,16 +23,17 @@ namespace PhotoGallery.Tests.ControllerTests
 
         IMapper mapper;
 
-        Mock<IUserService> mockService;
-
+        Mock<IUserService> mockPhotoService;
+        Mock<ITagService> mockTagService;
+        
         UserController controller;
 
         public UserControllerTests()
         {
             mapper = CreateMapperProfile();
-            mockService = new Mock<IUserService>();
+            mockPhotoService = new Mock<IUserService>();
 
-            controller = new UserController(mapper, mockService.Object);
+            controller = new UserController(mapper, mockPhotoService.Object, mockTagService.Object);
             AddIdentity(controller, userId);
         }
 
@@ -41,11 +42,11 @@ namespace PhotoGallery.Tests.ControllerTests
         {
             var userDTOs = new List<UserDTO> { new UserDTO  { UserName = "username", Email = "email", Roles = new string[] { "User" } } };
 
-            mockService.Setup(s => s.GetUsersAsync()).ReturnsAsync(userDTOs).Verifiable();
+            mockPhotoService.Setup(s => s.GetUsersAsync()).ReturnsAsync(userDTOs).Verifiable();
 
             controller.GetUsers().Result.Result.Should().BeOfType<OkObjectResult>()
                 .Which.Value.Should().BeEquivalentTo(userDTOs);
-            mockService.Verify();
+            mockPhotoService.Verify();
         }
 
         [Fact]
@@ -53,11 +54,11 @@ namespace PhotoGallery.Tests.ControllerTests
         {
             var userDTO = new UserDTO  { UserName = "username", Email = "email", Roles = new string[] { "User" } };
 
-            mockService.Setup(s => s.GetUserAsync(userId)).ReturnsAsync(userDTO).Verifiable();
+            mockPhotoService.Setup(s => s.GetUserAsync(userId)).ReturnsAsync(userDTO).Verifiable();
 
             controller.GetUser(userId).Result.Result.Should().BeOfType<OkObjectResult>()
                 .Which.Value.Should().BeEquivalentTo(userDTO);
-            mockService.Verify();
+            mockPhotoService.Verify();
         }
 
         [Fact]
@@ -66,11 +67,11 @@ namespace PhotoGallery.Tests.ControllerTests
             var userName = "username";
             var userDTO = new UserDTO { UserName = "username", Email = "email", Roles = new string[] { "User" } };
 
-            mockService.Setup(s => s.GetUserByUserNameAsync(userName)).ReturnsAsync(userDTO).Verifiable();
+            mockPhotoService.Setup(s => s.GetUserByUserNameAsync(userName)).ReturnsAsync(userDTO).Verifiable();
 
             controller.GetUserByUserName(userName).Result.Result.Should().BeOfType<OkObjectResult>()
                 .Which.Value.Should().BeEquivalentTo(userDTO);
-            mockService.Verify();
+            mockPhotoService.Verify();
         }
 
         [Fact]
@@ -78,11 +79,11 @@ namespace PhotoGallery.Tests.ControllerTests
         {
             var userModel = new UserRegisterModel { UserName = "username", Email = "email", Password = "pass"};
 
-            mockService.Setup(s => s.CreateUserAsync(It.Is<UserRegisterDTO>(dto =>
+            mockPhotoService.Setup(s => s.CreateUserAsync(It.Is<UserRegisterDTO>(dto =>
                 dto.UserName == userModel.UserName && dto.Email == userModel.Email))).Verifiable();
 
             controller.RegisterUser(userModel).Result.Should().BeOfType<OkResult>();
-            mockService.Verify();
+            mockPhotoService.Verify();
         }
 
         [Fact]
@@ -91,21 +92,21 @@ namespace PhotoGallery.Tests.ControllerTests
             var userModel = new UserLoginModel { UserName = "username", Password = "pass" };
             var userDTO = new UserWithTokenDTO { UserName = "username" };
 
-            mockService.Setup(s => s.LoginAsync(It.Is<UserLoginDTO>(dto =>
+            mockPhotoService.Setup(s => s.LoginAsync(It.Is<UserLoginDTO>(dto =>
                 dto.UserName == userModel.UserName && dto.Password == userModel.Password))).ReturnsAsync(userDTO).Verifiable();
 
             controller.LoginUser(userModel).Result.Result.Should().BeOfType<OkObjectResult>()
                 .Which.Value.Should().BeEquivalentTo(userModel, options => options.ExcludingMissingMembers());
-            mockService.Verify();
+            mockPhotoService.Verify();
         }
 
         [Fact]
         public void DeleteUser_Should_ReturnUserModel()
         {
-            mockService.Setup(s => s.RemoveUserAsync(userId)).Verifiable();
+            mockPhotoService.Setup(s => s.RemoveUserAsync(userId)).Verifiable();
 
             controller.DeleteUser(userId).Result.Should().BeOfType<OkResult>();
-            mockService.Verify();
+            mockPhotoService.Verify();
         }
 
     }

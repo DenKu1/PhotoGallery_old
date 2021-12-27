@@ -42,7 +42,10 @@ namespace PhotoGallery.BLL.Services
 
             var roles = unitOfWork.UserManager.GetRolesAsync(user).Result.ToArray();
 
-            return mapper.Map<UserDTO>(user, opt => opt.Items["roles"] = roles);
+            return mapper.Map<UserDTO>(user, opt =>
+            {
+                opt.Items["roles"] = roles; 
+            });
         }
 
         public async Task<UserDTO> GetUserByUserNameAsync(string userName)

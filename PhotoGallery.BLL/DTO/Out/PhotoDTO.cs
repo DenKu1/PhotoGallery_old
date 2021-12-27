@@ -10,6 +10,7 @@ namespace PhotoGallery.BLL.DTO.Out
         public int AlbumId { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
+        public string[] Tags { get; set; }
         public DateTime Created { get; set; }
     }
 }
