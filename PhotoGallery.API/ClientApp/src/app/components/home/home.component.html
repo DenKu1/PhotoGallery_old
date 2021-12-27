@@ -1,8 +1,8 @@
 <div class="container">
   <div class="card-columns">
-    <div class="card bg-primary" *ngFor="let photo of photos">
+    <div class="card bg-light" *ngFor="let photo of photos">
       <div class="card-body text-center">
-        <img class="my-image" src="{{photo.path}}">
+        <img [routerLink]="['/albums', photo.albumId, 'photos']" class="my-image" src="{{photo.path}}">
       </div>
     </div>
   </div>

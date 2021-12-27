@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Photo} from "../../models/photo";
 import {ActivatedRoute} from "@angular/router";
-import {FormBuilder} from "@angular/forms";
-import {AlbumService} from "../../services/album.service";
 import {PhotoService} from "../../services/photo.service";
-import {CommentService} from "../../services/comment.service";
 import {UserService} from "../../services/user.service";
 import {first} from "rxjs/operators";
 import {User} from "../../models/user";
@@ -41,5 +38,4 @@ export class HomeComponent implements OnInit {
           this.photos = photos;
         });
   }
-
 }
