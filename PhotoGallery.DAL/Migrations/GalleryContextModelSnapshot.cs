@@ -275,17 +275,34 @@ namespace PhotoGallery.DAL.Migrations
                         new
                         {
                             Id = -1,
-                            ConcurrencyStamp = "d5704e83-a363-4940-9e96-c97abf3bd2fa",
+                            ConcurrencyStamp = "b185aaaf-506d-451a-844f-d3d4505e1c29",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = -2,
-                            ConcurrencyStamp = "86f969d0-1489-4f09-92f1-8ccadf9bd583",
+                            ConcurrencyStamp = "e7c2b6eb-2bd4-45b4-890e-c227199d8f4a",
                             Name = "User",
                             NormalizedName = "USER"
                         });
+                });
+
+            modelBuilder.Entity("PhotoGallery.DAL.Entities.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("PhotoGallery.DAL.Entities.User", b =>
@@ -359,17 +376,47 @@ namespace PhotoGallery.DAL.Migrations
                         {
                             Id = -1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bf16b325-04af-4966-9924-53016d5e60ef",
+                            ConcurrencyStamp = "3e119f8f-f914-47f5-a8b8-bd221f38d1f4",
                             Email = "admin@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@MAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEsSZRtavc+6CeyIOVDL+7QlViRqNGj1HZ4bQZ9mfnUweLAB1WonBZbp949j3xJbeg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHSw0F48/iKAV1+h9gXl6SdR9TkYuKe5PLTsN+1LfxDHvdIjjG7t9ryDvNmjxcXL7Q==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
+                });
+
+            modelBuilder.Entity("PhotoTag", b =>
+                {
+                    b.Property<int>("PhotosId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PhotosId", "TagsId");
+
+                    b.HasIndex("TagsId");
+
+                    b.ToTable("PhotoTag");
+                });
+
+            modelBuilder.Entity("TagUser", b =>
+                {
+                    b.Property<int>("TagsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TagsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("TagUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -479,6 +526,36 @@ namespace PhotoGallery.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Album");
+                });
+
+            modelBuilder.Entity("PhotoTag", b =>
+                {
+                    b.HasOne("PhotoGallery.DAL.Entities.Photo", null)
+                        .WithMany()
+                        .HasForeignKey("PhotosId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PhotoGallery.DAL.Entities.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("TagUser", b =>
+                {
+                    b.HasOne("PhotoGallery.DAL.Entities.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PhotoGallery.DAL.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PhotoGallery.DAL.Entities.Album", b =>

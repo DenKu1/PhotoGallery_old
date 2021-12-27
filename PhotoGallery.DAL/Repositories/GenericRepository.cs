@@ -33,6 +33,11 @@ namespace PhotoGallery.DAL.Repositories
         {
             return await context.Set<TEntity>().Where(expression).ToListAsync();
         }
+        
+        public async Task<TEntity> FindFirstOrDefaultAsync(Expression<Func<TEntity, bool>> expression)
+        {
+            return await context.Set<TEntity>().Where(expression).FirstOrDefaultAsync();
+        }
 
         public async Task<TEntity> GetByIdAsync(int id)
         {

@@ -15,6 +15,7 @@ namespace PhotoGallery.DAL.Interfaces
         IGenericRepository<Comment> Comments { get; }
         IGenericRepository<Like> Likes { get; }
         IGenericRepository<Photo> Photos { get; }
+        IGenericRepository<Tag> Tags { get; }
         Task SaveAsync();
     }
 }

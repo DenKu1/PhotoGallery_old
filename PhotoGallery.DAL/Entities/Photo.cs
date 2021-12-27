@@ -17,5 +17,6 @@ namespace PhotoGallery.DAL.Entities
 
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public virtual ICollection<Like> Likes { get; set; } = new List<Like>();
+        public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
     }
 }
