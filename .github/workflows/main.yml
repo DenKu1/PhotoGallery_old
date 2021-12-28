@@ -28,3 +28,6 @@ jobs:
 
       - name: Run unit tests 🧪
         run: dotnet test "./PhotoGallery.Tests/PhotoGallery.Tests.csproj" -c Release --no-build
+
+      - name: Run integration tests 🧪🧪
+        run: dotnet test "./PhotoGallery.IntegrationTests/PhotoGallery.IntegrationTests.csproj" -c Release --no-build
