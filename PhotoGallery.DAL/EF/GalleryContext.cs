@@ -15,7 +15,8 @@ namespace PhotoGallery.DAL.EF
 
         public GalleryContext(DbContextOptions<GalleryContext> options) : base(options)
         {
-           // Database.EnsureCreated();
+            //Turn on for integration tests; turn off for manual migrations
+            Database.EnsureCreated(); 
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

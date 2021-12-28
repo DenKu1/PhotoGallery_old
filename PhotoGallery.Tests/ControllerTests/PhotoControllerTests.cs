@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +32,7 @@ namespace PhotoGallery.Tests.ControllerTests
         {
             mapper = CreateMapperProfile();
             mockPhotoService = new Mock<IPhotoService>();
+            mockTagService = new Mock<ITagService>();
 
             controller = new PhotoController(mapper, mockPhotoService.Object, mockTagService.Object);
             AddIdentity(controller, userId);
@@ -40,7 +42,7 @@ namespace PhotoGallery.Tests.ControllerTests
         public void GetPhotos_Should_ReturnPhotoModels()
         {
             var albumId = 1;
-            var photoDTOs = new List<PhotoDTO> { new PhotoDTO { Name = "name", Path = "path" } };
+            var photoDTOs = new List<PhotoDTO> { new PhotoDTO { Name = "name", Path = "path", Tags = Array.Empty<string>() } };
 
             mockPhotoService.Setup(s => s.GetPhotosAsync(userId, albumId)).ReturnsAsync(photoDTOs).Verifiable();
 
@@ -53,7 +55,7 @@ namespace PhotoGallery.Tests.ControllerTests
         public void GetPhoto_Should_ReturnPhotoModel()
         {
             var photoId = 1;
-            var photoDTO = new PhotoDTO { Name = "name", Path = "path" };
+            var photoDTO = new PhotoDTO { Name = "name", Path = "path", Tags = Array.Empty<string>() };
 
             mockPhotoService.Setup(s => s.GetPhotoAsync(photoId)).ReturnsAsync(photoDTO).Verifiable();
 

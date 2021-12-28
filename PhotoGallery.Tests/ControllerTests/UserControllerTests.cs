@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,6 +33,7 @@ namespace PhotoGallery.Tests.ControllerTests
         {
             mapper = CreateMapperProfile();
             mockPhotoService = new Mock<IUserService>();
+            mockTagService = new Mock<ITagService>();
 
             controller = new UserController(mapper, mockPhotoService.Object, mockTagService.Object);
             AddIdentity(controller, userId);
@@ -40,7 +42,7 @@ namespace PhotoGallery.Tests.ControllerTests
         [Fact]
         public void GetUsers_Should_ReturnUserModels()
         {
-            var userDTOs = new List<UserDTO> { new UserDTO  { UserName = "username", Email = "email", Roles = new string[] { "User" } } };
+            var userDTOs = new List<UserDTO> { new UserDTO  { UserName = "username", Email = "email", Roles = new string[] { "User" }, Tags = Array.Empty<string>() } };
 
             mockPhotoService.Setup(s => s.GetUsersAsync()).ReturnsAsync(userDTOs).Verifiable();
 
@@ -52,7 +54,7 @@ namespace PhotoGallery.Tests.ControllerTests
         [Fact]
         public void GetUser_Should_ReturnUserModel()
         {
-            var userDTO = new UserDTO  { UserName = "username", Email = "email", Roles = new string[] { "User" } };
+            var userDTO = new UserDTO  { UserName = "username", Email = "email", Roles = new string[] { "User" }, Tags = Array.Empty<string>() };
 
             mockPhotoService.Setup(s => s.GetUserAsync(userId)).ReturnsAsync(userDTO).Verifiable();
 
@@ -65,7 +67,7 @@ namespace PhotoGallery.Tests.ControllerTests
         public void GetUserByUserName_Should_ReturnUserModel()
         {
             var userName = "username";
-            var userDTO = new UserDTO { UserName = "username", Email = "email", Roles = new string[] { "User" } };
+            var userDTO = new UserDTO { UserName = "username", Email = "email", Roles = new string[] { "User" }, Tags = Array.Empty<string>() };
 
             mockPhotoService.Setup(s => s.GetUserByUserNameAsync(userName)).ReturnsAsync(userDTO).Verifiable();
 
