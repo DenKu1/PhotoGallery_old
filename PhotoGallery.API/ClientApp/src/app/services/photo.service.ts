@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Photo } from '../models/photo';
+import { PhotoRecommendations } from '../models/photoRecommendations';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,10 @@ export class PhotoService {
 
   getPhoto(id: number): Observable<Photo> {
     return this.http.get<Photo>(`${environment.apiUrl}/photos/${id}`)
+  }
+
+  getPhotoRecommendations(id: number): Observable<PhotoRecommendations> {
+    return this.http.get<PhotoRecommendations>(`${environment.apiUrl}/photoRecommendations/${id}`)
   }
 
   createPhoto(albumId: number, name: string, path: string): Observable<Photo> {

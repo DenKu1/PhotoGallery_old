@@ -31,6 +31,7 @@ namespace PhotoGallery.API.Configuration.Automapper
             CreateMap<AlbumDTO, AlbumModel>();
             CreateMap<CommentDTO, CommentModel>();
             CreateMap<PhotoDTO, PhotoModel>();
+            CreateMap<PhotoRecommendationsDTO, PhotoRecommendationsModel>();
             CreateMap<UserDTO, UserModel>();
             CreateMap<UserWithTokenDTO, UserWithTokenModel>();
         }

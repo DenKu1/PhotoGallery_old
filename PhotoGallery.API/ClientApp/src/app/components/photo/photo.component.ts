@@ -9,6 +9,7 @@ import { AlbumService } from '../../services/album.service';
 import { PhotoService } from '../../services/photo.service';
 import { CommentService } from '../../services/comment.service';
 import { UserService } from '../../services/user.service';
+import { PhotoRecommendations } from '../../models/photoRecommendations';
 
 @Component({
   selector: 'app-photo',
@@ -80,6 +81,16 @@ export class PhotoComponent implements OnInit {
           this.photos = photos;
           this.crCommentInfos = photos.map(p => new CreateCommentInfo(this.formBuilder, p.id));
           this.crTagInfos = photos.map(p => new CreateTagInfo(this.formBuilder, p.id));
+        });
+  }
+
+  getPhotoRecommendations(photoId: number): void {
+    this.photoService.getPhotoRecommendations(photoId)
+      .pipe(first())
+      .subscribe(
+        photoRecommendations => {
+          let targetPhoto = this.photos.find(photo => photo.id == photoId);
+          targetPhoto.recommendedPhotos = photoRecommendations.recommendedPhotos
         });
   }
 

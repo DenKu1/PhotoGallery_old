@@ -60,6 +60,16 @@ namespace PhotoGallery.API.Controllers
             return Ok(mapper.Map<PhotoModel>(photoDTO));
         }
 
+        [HttpGet]
+        [Route("api/photoRecommendations/{photoId}")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<PhotoRecommendationsModel>> GetPhotoRecommendations([FromRoute] int photoId)
+        {
+            var photoRecommendationsDTO = await photoService.GetPhotoRecommendationsAsync(photoId);
+
+            return Ok(mapper.Map<PhotoRecommendationsModel>(photoRecommendationsDTO));
+        }
+
         [HttpPost]
         [Route("api/albums/{albumId}/photos")]
         [Authorize(Roles = "User")]

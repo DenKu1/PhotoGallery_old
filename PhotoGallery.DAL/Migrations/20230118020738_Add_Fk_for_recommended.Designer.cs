@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PhotoGallery.DAL.EF;
 
 namespace PhotoGallery.DAL.Migrations
 {
     [DbContext(typeof(GalleryContext))]
-    partial class GalleryContextModelSnapshot : ModelSnapshot
+    [Migration("20230118020738_Add_Fk_for_recommended")]
+    partial class Add_Fk_for_recommended
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

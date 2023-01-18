@@ -74,9 +74,20 @@
                     <i *ngIf="photo.comments" class="fas fa-comment"></i>
                     <i *ngIf="!photo.comments" class="far fa-comment"></i>
                   </button>
+                  <button (click)="getPhotoRecommendations(photo.id)">
+                    <i *ngIf="photo.comments" class="fa fa-search"></i>
+                    <i *ngIf="!photo.comments" class="fa fa-search-plus"></i>
+                  </button>
                 </div>
               </div>
               <div class="card-footer bg-light">
+                <!--Get recommendations-->
+                <div *ngIf="photo.recommendedPhotos">
+                  <p>{{photo.recommendedPhotos.length}} recommended photos</p>
+                  <div *ngFor="let recommendedPhoto of photo.recommendedPhotos">
+                    <img class="img-fluid my-image my-image-preview" src="{{recommendedPhoto.path}}" alt="{{recommendedPhoto.name}}">
+                  </div>
+                </div>
                 <!--Get comments-->
                 <div *ngIf="photo.comments">
                   <p>{{photo.comments.length}} comments</p>

@@ -53,6 +53,16 @@ namespace PhotoGallery.BLL.Services
 
             return mapper.Map<PhotoDTO>(photo);
         }
+        public async Task<PhotoRecommendationsDTO> GetPhotoRecommendationsAsync(int photoId)
+        {
+            var photo = await unitOfWork.Photos.GetByIdAsync(photoId);
+
+            helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(photo);
+
+            var recommendations = mapper.Map<IEnumerable<PhotoDTO>>(photo.Recommendations.Select(p => p.Photo));
+
+            return new PhotoRecommendationsDTO { RecommendedPhotos = recommendations };
+        }
 
         public async Task<IEnumerable<PhotoDTO>> GetPhotosAsync(int albumId, int userId)
         {

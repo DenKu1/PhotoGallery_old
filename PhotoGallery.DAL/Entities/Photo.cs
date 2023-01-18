@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 using PhotoGallery.DAL.Entities.Base;
 
@@ -18,5 +19,8 @@ namespace PhotoGallery.DAL.Entities
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public virtual ICollection<Like> Likes { get; set; } = new List<Like>();
         public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
+
+        [InverseProperty("RecommendedPhoto")]
+        public virtual ICollection<Recommended> Recommendations { get; set; } = new List<Recommended>();
     }
 }

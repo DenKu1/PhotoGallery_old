@@ -10,6 +10,7 @@ namespace PhotoGallery.BLL.Interfaces
     {
         Task<PhotoDTO> AddPhotoAsync(PhotoAddDTO photoDTO);
         Task<PhotoDTO> GetPhotoAsync(int photoId);
+        Task<PhotoRecommendationsDTO> GetPhotoRecommendationsAsync(int photoId);
         Task<IEnumerable<PhotoDTO>> GetPhotosByTagsAsync(string[] tags, int limit);
         Task<IEnumerable<PhotoDTO>> GetPhotosAsync(int albumId, int userId);
         Task LikePhotoAsync(int photoId, int userId);

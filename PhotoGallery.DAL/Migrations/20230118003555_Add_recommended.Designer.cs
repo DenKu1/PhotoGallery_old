@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PhotoGallery.DAL.EF;
 
 namespace PhotoGallery.DAL.Migrations
 {
     [DbContext(typeof(GalleryContext))]
-    partial class GalleryContextModelSnapshot : ModelSnapshot
+    [Migration("20230118003555_Add_recommended")]
+    partial class Add_recommended
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -260,8 +262,6 @@ namespace PhotoGallery.DAL.Migrations
 
                     b.HasIndex("PhotoId");
 
-                    b.HasIndex("RecommendedPhotoId");
-
                     b.ToTable("Recommended");
                 });
 
@@ -297,14 +297,14 @@ namespace PhotoGallery.DAL.Migrations
                         new
                         {
                             Id = -1,
-                            ConcurrencyStamp = "14e30585-fdf4-44d8-9fc5-cf16c0c695cc",
+                            ConcurrencyStamp = "aa2bc262-0585-4456-95aa-9a7091b4a7e0",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = -2,
-                            ConcurrencyStamp = "0a866da7-ea0e-4873-bc3b-544b93250510",
+                            ConcurrencyStamp = "820b8e14-628d-45d3-b1a6-325676807d03",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -398,13 +398,13 @@ namespace PhotoGallery.DAL.Migrations
                         {
                             Id = -1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "1d207418-8ff1-425c-92f8-c36bef391191",
+                            ConcurrencyStamp = "6193ddae-d445-419a-96fb-fb5b13e8daea",
                             Email = "admin@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@MAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOQ5Ru5ZNi1xsdNlbTzEUCn5LGAC2T7DlTgyZkwdv1tP9OIz61IzMJYNFbyOgV4sig==",
+                            PasswordHash = "AQAAAAEAACcQAAAAENJ7S1QquKRWvNknsU1N8+/wggkZF3Fs4+KywiY4xQs9WD3aAPHVJ0uHsd91COLKkw==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "admin"
@@ -553,18 +553,10 @@ namespace PhotoGallery.DAL.Migrations
             modelBuilder.Entity("PhotoGallery.DAL.Entities.Recommended", b =>
                 {
                     b.HasOne("PhotoGallery.DAL.Entities.Photo", "Photo")
-                        .WithMany()
+                        .WithMany("Recommendations")
                         .HasForeignKey("PhotoId");
 
-                    b.HasOne("PhotoGallery.DAL.Entities.Photo", "RecommendedPhoto")
-                        .WithMany("Recommendations")
-                        .HasForeignKey("RecommendedPhotoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Photo");
-
-                    b.Navigation("RecommendedPhoto");
                 });
 
             modelBuilder.Entity("PhotoTag", b =>
