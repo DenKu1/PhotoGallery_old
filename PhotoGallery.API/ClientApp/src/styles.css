@@ -42,10 +42,16 @@ body {
   height: auto;
 }
 
-	.my-image-preview {
-	  width: 50px;
-	  height: 50px;
-	}
+  .my-image-preview {
+    width: 100px;
+    height: 100px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+  }
+
+.to-right {
+  float: right;
+}
 
 /*Comment input*/
 .form__group {

@@ -59,7 +59,7 @@ namespace PhotoGallery.BLL.Services
 
             helper.ThrowPhotoGalleryNotFoundExceptionIfModelIsNull(photo);
 
-            var recommendations = mapper.Map<IEnumerable<PhotoDTO>>(photo.Recommendations.Select(p => p.Photo));
+            var recommendations = mapper.Map<IEnumerable<PhotoDTO>>(photo.Recommendations?.Select(p => p.Photo));
 
             return new PhotoRecommendationsDTO { RecommendedPhotos = recommendations };
         }

@@ -74,12 +74,12 @@
                     <i *ngIf="photo.comments" class="fas fa-comment"></i>
                     <i *ngIf="!photo.comments" class="far fa-comment"></i>
                   </button>
-                  <button (click)="getPhotoRecommendations(photo.id)">
-                    <i *ngIf="photo.comments" class="fa fa-search"></i>
-                    <i *ngIf="!photo.comments" class="fa fa-search-plus"></i>
+                  <button class="my-photo-at to-right" (click)="getPhotoRecommendations(photo.id)">
+                    <i *ngIf="photo.recommendedPhotos" class="fas fa-comments"></i>
+                    <i *ngIf="!photo.recommendedPhotos" class="far fa-comments"></i>
                   </button>
+                  </div>
                 </div>
-              </div>
               <div class="card-footer bg-light">
                 <!--Get recommendations-->
                 <div *ngIf="photo.recommendedPhotos">
